@@ -11,10 +11,15 @@ export function bindModeEvents() {
     button.addEventListener("click", () => {
       state.mode = button.dataset.mode;
       setActiveMode(state.mode);
+      const difficultyGuidance = {
+        Beginner: "Use plain language, define key terms, and give step-by-step hints.",
+        Intermediate: "Use practical workplace examples and explain the main trade-offs.",
+        Advanced: "Use complex situations, competing constraints, and fewer hints.",
+      }[state.difficulty];
       const prompts = {
-        learn: `Explain ${state.topic} in simple terms and use a professional workplace example`,
-        practice: `Give me a practice question on ${state.topic}`,
-        quiz: "Start a short PMP-style quiz",
+        learn: `Explain ${state.topic} at ${state.difficulty} level. ${difficultyGuidance}`,
+        practice: `Give me a ${state.difficulty}-level practice question on ${state.topic}`,
+        quiz: `Start a short ${state.difficulty}-level PMP or PMI-ACP quiz on ${state.topic}`,
         challenge: `Give me a ${state.difficulty}-level challenge scenario on ${state.topic}`,
       };
       document.getElementById("messageInput").value = prompts[state.mode];

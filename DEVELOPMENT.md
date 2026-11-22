@@ -173,6 +173,12 @@ The generic `backend/` package was renamed to `pm_mentor/`, so the import path n
 
 The architecture diagram was also rewritten in plain language around the learner's journey, while keeping the route and storage details in the architecture guide.
 
+### Iteration 12: Making difficulty adaptive and adding a progress report
+
+The selected difficulty now determines which authored question is returned for the learner's topic. The question bank includes beginner, intermediate, and advanced coverage for every topic. Each learning mode also sends difficulty-specific instructions, the model prompt differentiates explanation depth and hints, and the built-in tutor varies its guidance when no model key is configured. The learner profile and practice question both display the selected level.
+
+The progress summary now includes a per-topic breakdown and a downloadable text report with learner settings, attempts, accuracy, strong areas, needs-practice topics, and a recommended next lesson.
+
 ## 4. Testing performed
 
 We tested the application at both browser-facing and API levels.
@@ -209,6 +215,8 @@ An incorrect answer should receive:
 The automated suite (`py -m pytest -q`) covers:
 
 - Home and health endpoints
+- Difficulty-matched practice questions for every topic and level
+- Learner progress report metrics, topic breakdown, and download headers
 - Demo response and configured model request forwarding
 - Input validation for chat, profile, and answer endpoints
 - Correct and incorrect question evaluation, including rejecting substring matches

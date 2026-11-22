@@ -7,6 +7,8 @@ export function updateProfileUI() {
   const initial = firstName.charAt(0).toUpperCase();
   document.getElementById("profileName").textContent = state.name;
   document.getElementById("profileLevel").textContent = `${state.level} learner`;
+  document.getElementById("profileDifficulty").textContent =
+    `${state.difficulty} difficulty`;
   document.getElementById("avatarInitial").textContent = initial;
   document.getElementById("topAvatar").textContent = initial;
   document.getElementById("welcomeName").textContent = firstName;

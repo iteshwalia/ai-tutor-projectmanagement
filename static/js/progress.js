@@ -31,6 +31,18 @@ export function updateSummary() {
   document.getElementById("weakAreas").innerHTML = weak.length
     ? weak.map(area => `<span>${escapeHTML(area)}</span>`).join("")
     : "<span>Complete a practice question</span>";
+  const topicResults = Object.entries(state.areas)
+    .sort(([first], [second]) => first.localeCompare(second))
+    .map(([topic, result]) => {
+      const topicAccuracy = result.attempted
+        ? Math.round((result.correct / result.attempted) * 100)
+        : 0;
+      return `<div class="topic-result"><span>${escapeHTML(topic)}</span>` +
+        `<strong>${result.correct}/${result.attempted} · ${topicAccuracy}%</strong></div>`;
+    });
+  document.getElementById("topicBreakdown").innerHTML = topicResults.length
+    ? topicResults.join("")
+    : "<span>Complete a practice question to see topic results</span>";
   document.getElementById("recommendationText").textContent = weak[0]
     ? `${weak[0]} fundamentals and a guided scenario`
     : `${state.topic} fundamentals and an applied challenge`;

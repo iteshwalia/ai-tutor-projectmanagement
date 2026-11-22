@@ -1,8 +1,9 @@
 """Learner profile, practice, and progress API routes."""
 
 import random
+from datetime import datetime
 
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, make_response
 from flask import request as flask_request
 
 from pm_mentor.learner_repository import get_learner_state, save_learner_state
@@ -42,13 +43,18 @@ def update_profile():
 def question():
     state = get_learner_state()
     profile = state["profile"]
-    matching = [item for item in QUESTION_BANK if item["topic"] == profile["topic"]]
-    item = random.choice(matching or QUESTION_BANK)
+    matching = [
+        item
+        for item in QUESTION_BANK
+        if item["topic"] == profile["topic"] and item["difficulty"] == profile["difficulty"]
+    ]
+    item = random.choice(matching)
     state["active_question"] = item
     save_learner_state(state)
     return jsonify(
         {
             "topic": item["topic"],
+            "difficulty": item["difficulty"],
             "question": item["question"],
             "choices": item["choices"],
             "hint": item["hint"],
@@ -99,6 +105,74 @@ def evaluate():
 @learner.get("/progress")
 def progress():
     return jsonify(get_learner_state()["progress"])
+
+
+@learner.get("/progress/report")
+def progress_report():
+    state = get_learner_state()
+    profile = state["profile"]
+    progress = state["progress"]
+    attempted = progress["attempted"]
+    correct = progress["correct"]
+    accuracy = round(correct / attempted * 100) if attempted else 0
+    areas = sorted(progress["areas"].items())
+    strong = []
+    weak = []
+    topic_lines = []
+
+    for topic, result in areas:
+        topic_attempted = result["attempted"]
+        topic_correct = result["correct"]
+        topic_accuracy = round(topic_correct / topic_attempted * 100) if topic_attempted else 0
+        topic_lines.append(
+            f"- {topic}: {topic_correct}/{topic_attempted} correct ({topic_accuracy}%)"
+        )
+        if topic_attempted and topic_correct / topic_attempted >= 0.7:
+            strong.append(topic)
+        elif topic_attempted:
+            weak.append(topic)
+
+    recommendation = (
+        f"{weak[0]} fundamentals and a guided scenario"
+        if weak
+        else f"{profile['topic']} fundamentals and an applied challenge"
+    )
+    strong_lines = [f"- {topic}" for topic in strong] or [
+        "- Keep practicing to build insights."
+    ]
+    weak_lines = [f"- {topic}" for topic in weak] or [
+        "- No priority areas identified yet."
+    ]
+    report_lines = [
+        "PM Mentor - Learning Progress Report",
+        f"Generated: {datetime.now().astimezone().strftime('%Y-%m-%d %H:%M %Z')}",
+        f"Learner: {' '.join(profile['name'].split())}",
+        f"Focus topic: {profile['topic']}",
+        f"Selected difficulty: {profile['difficulty']}",
+        "",
+        "Overall performance",
+        f"Questions attempted: {attempted}",
+        f"Correct answers: {correct}",
+        f"Accuracy: {accuracy}%",
+        "",
+        "Topic breakdown",
+        *(topic_lines or ["- No practice questions completed yet."]),
+        "",
+        "Strong areas",
+        *strong_lines,
+        "",
+        "Needs practice",
+        *weak_lines,
+        "",
+        f"Recommended next lesson: {recommendation}",
+    ]
+    response = make_response("\n".join(report_lines) + "\n")
+    response.headers["Content-Type"] = "text/plain; charset=utf-8"
+    response.headers["Content-Disposition"] = (
+        'attachment; filename="pm-mentor-progress-report.txt"'
+    )
+    response.headers["Cache-Control"] = "no-store"
+    return response
 
 
 @learner.post("/reset")

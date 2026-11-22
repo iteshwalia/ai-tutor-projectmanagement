@@ -9,6 +9,20 @@ from urllib.parse import urlsplit
 from . import __name__ as services_package
 
 logger = logging.getLogger(services_package)
+DIFFICULTY_INSTRUCTIONS = {
+    "Beginner": (
+        "Use everyday language, define project-management terms, explain one step at a time, "
+        "and give a simple workplace example."
+    ),
+    "Intermediate": (
+        "Use standard project-management terminology, practical workplace scenarios, and explain "
+        "the main decision and trade-offs."
+    ),
+    "Advanced": (
+        "Use complex PMP or PMI-ACP scenarios with competing constraints, explicit assumptions, "
+        "and minimal scaffolding; compare important trade-offs."
+    ),
+}
 
 
 def get_provider_config():
@@ -72,11 +86,13 @@ def generate_model_response(message, profile, app_is_production):
         logger.error("AI provider URL must use HTTPS outside local development.")
         return None, "The AI provider endpoint must use HTTPS.", 503
 
+    difficulty = profile["difficulty"]
     system_prompt = (
-        f"You are PM Mentor, a {profile['difficulty']} tutor for working professionals. "
+        f"You are PM Mentor, a {difficulty} tutor for working professionals. "
         f"The learner is studying {profile['topic']}. "
-        "Explain simply with workplace examples, give hints before answers, encourage retrying, "
-        "evaluate answers constructively, and redirect unrelated questions to project management."
+        f"{DIFFICULTY_INSTRUCTIONS[difficulty]} "
+        "Give hints before answers, encourage retrying, evaluate answers constructively, "
+        "and redirect unrelated questions to project management."
     )
     payload = json.dumps(
         {
@@ -113,16 +129,28 @@ def generate_demo_response(message, profile):
     text = message.lower()
     for keyword, answer in _fallback_knowledge().items():
         if keyword in text:
-            return (
-                f"{answer} For a {profile['difficulty'].lower()}-level learner, apply this "
-                "to a real project team and identify the decision, constraint, "
-                "and expected outcome."
-            )
+            return f"{answer} {_demo_difficulty_guidance(profile['difficulty'])}"
     return (
         f"For {profile['topic']}, begin by identifying the project goal, constraints, "
-        "and stakeholders. I can explain a concept, give a practice question, "
-        "or start a short quiz."
+        f"and stakeholders. {_demo_difficulty_guidance(profile['difficulty'])} "
+        "I can explain a concept, give a practice question, or start a short quiz."
     )
+
+
+def _demo_difficulty_guidance(difficulty):
+    guidance = {
+        "Beginner": (
+            "In simple terms, define the key idea and try one small next step on a project."
+        ),
+        "Intermediate": (
+            "Apply the idea to a workplace scenario and identify the key decision and trade-off."
+        ),
+        "Advanced": (
+            "Compare this approach with an alternative, including assumptions, constraints, "
+            "and likely consequences."
+        ),
+    }
+    return guidance[difficulty]
 
 
 def _fallback_knowledge():

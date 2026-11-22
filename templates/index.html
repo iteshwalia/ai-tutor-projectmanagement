@@ -59,6 +59,7 @@
           <div>
             <strong id="profileName">Itesh</strong>
             <small id="profileLevel">Intermediate learner</small>
+            <small id="profileDifficulty">Intermediate difficulty</small>
           </div>
         </div>
         <div class="progress-block">
@@ -201,7 +202,7 @@
     <div class="modal summary-modal" role="dialog" aria-modal="true" aria-labelledby="summaryTitle">
       <div class="modal-header">
         <div>
-          <span class="eyebrow">TODAY’S PERFORMANCE</span>
+          <span class="eyebrow">LEARNER PROGRESS</span>
           <h2 id="summaryTitle">Learning summary</h2>
         </div>
         <button class="modal-close" data-close="summaryModal" aria-label="Close">&times;</button>
@@ -219,10 +220,19 @@
         <h3>Needs practice</h3>
         <div id="weakAreas" class="tag-list weak"><span>Complete a practice question</span></div>
       </div>
+      <div class="summary-section">
+        <h3>Topic breakdown</h3>
+        <div id="topicBreakdown" class="topic-breakdown">
+          <span>Complete a practice question to see topic results</span>
+        </div>
+      </div>
       <div class="recommendation">
         <span>Recommended next lesson</span>
         <strong id="recommendationText">Project Planning & Scheduling fundamentals</strong>
       </div>
+      <a class="primary-button report-download" href="/api/progress/report">
+        Download progress report
+      </a>
     </div>
   </div>
 

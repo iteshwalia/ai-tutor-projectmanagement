@@ -33,7 +33,8 @@ export async function sendMessage() {
       ).join("");
       addMessage(
         "assistant",
-        `<p><strong>${state.mode === "quiz" ? "Quiz" : "Practice"} question</strong></p>` +
+        `<p><strong>${state.mode === "quiz" ? "Quiz" : "Practice"} question · ` +
+        `${escapeHTML(question.difficulty)} level</strong></p>` +
         `<p>${escapeHTML(question.question)}</p><ul>${choices}</ul>` +
         "<p><small>Reply with your answer.</small></p>",
       );

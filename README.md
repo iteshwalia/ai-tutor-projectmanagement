@@ -8,6 +8,7 @@ PM Mentor is a focused project-management tutor for working professionals. It co
 - Learner profile, topic, and difficulty selection
 - Project-management examples and answer feedback
 - Session progress, strengths, weaknesses, and next-lesson suggestions
+- Difficulty-matched practice questions and a downloadable progress report
 - Demo responses without an AI credential
 - Optional Google Gemini free-tier or other OpenAI-compatible model integration
 - Docker deployment and GitHub Actions checks
@@ -41,7 +42,7 @@ python app.py
 |---|---|
 | `templates/index.html` | Accessible tutor UI and profile/settings dialogs |
 | `static/styles.css` | Responsive visual design |
-| `static/js/` | ES modules separated into API client, chat, modes, profile, progress, state, and DOM helpers |
+| `static/js/` | ES modules separated into API client, chat, modes, profile, progress reports, state, and DOM helpers |
 | `app.py` | Local development entry point |
 | `pm_mentor/application.py` | App factory, configuration, security headers, and blueprint registration |
 | `pm_mentor/routes/` | Separate page, health, learner, and tutor HTTP endpoints |
@@ -74,12 +75,12 @@ static/js/
   chat.js                    Chat and answer flow
   modes.js                   Learn/Practice/Quiz/Challenge controls
   profile.js                 Learner profile and model status
-  progress.js                Progress summary and reset
+  progress.js                Progress summary, report view, and reset
   dom.js                     Shared rendering and dialog helpers
   state.js                   Browser state
 ```
 
-Important endpoints: `GET /healthz`, `GET /api/status`, `POST /api/chat`, `GET/POST /api/profile`, `GET /api/question`, `POST /api/evaluate`, `GET /api/progress`, and `POST /api/reset`.
+Important endpoints: `GET /healthz`, `GET /api/status`, `POST /api/chat`, `GET/POST /api/profile`, `GET /api/question`, `POST /api/evaluate`, `GET /api/progress`, `GET /api/progress/report`, and `POST /api/reset`.
 
 ## Model responses and API credentials
 

@@ -10,6 +10,7 @@ from unittest.mock import MagicMock, patch
 from flask.sessions import SecureCookieSessionInterface
 
 from app import create_app
+from pm_mentor.learning_content import LEVELS, TOPICS
 
 
 class TutorApplicationTests(unittest.TestCase):
@@ -40,6 +41,9 @@ class TutorApplicationTests(unittest.TestCase):
         home = self.client.get("/")
         self.assertEqual(home.status_code, 200)
         self.assertIn(b'type="module" src="/static/js/app.js"', home.data)
+        self.assertIn(b'id="difficultyInput"', home.data)
+        self.assertIn(b'id="profileDifficulty"', home.data)
+        self.assertIn(b'href="/api/progress/report"', home.data)
         entrypoint = self.client.get("/static/js/app.js")
         self.assertEqual(entrypoint.status_code, 200)
         self.assertIn("javascript", entrypoint.content_type)
@@ -72,6 +76,29 @@ class TutorApplicationTests(unittest.TestCase):
         self.assertTrue(answer.json["correct"])
         self.assertEqual(answer.json["progress"]["attempted"], 1)
         self.assertEqual(answer.json["progress"]["correct"], 1)
+
+    def test_questions_match_selected_topic_and_difficulty(self):
+        for topic in sorted(TOPICS):
+            for difficulty in sorted(LEVELS):
+                self.client.post(
+                    "/api/profile",
+                    json={"topic": topic, "difficulty": difficulty},
+                )
+                with patch(
+                    "pm_mentor.routes.learner.random.choice",
+                    side_effect=lambda candidates: candidates[0],
+                ) as choose:
+                    response = self.client.get("/api/question")
+
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.json["topic"], topic)
+                self.assertEqual(response.json["difficulty"], difficulty)
+                self.assertTrue(
+                    all(
+                        item["topic"] == topic and item["difficulty"] == difficulty
+                        for item in choose.call_args.args[0]
+                    )
+                )
 
     def test_answer_matching_does_not_accept_substrings(self):
         self.get_pert_question()
@@ -141,7 +168,10 @@ class TutorApplicationTests(unittest.TestCase):
     def test_expanded_cpmai_question_accepts_natural_answer(self):
         self.client.post(
             "/api/profile",
-            json={"topic": "CPMAI - AI Project Management"},
+            json={
+                "topic": "CPMAI - AI Project Management",
+                "difficulty": "Beginner",
+            },
         )
         question = self.client.get("/api/question")
         self.assertEqual(question.json["topic"], "CPMAI - AI Project Management")
@@ -161,6 +191,61 @@ class TutorApplicationTests(unittest.TestCase):
             response = self.client.post("/api/chat", json={"message": "What is data readiness?"})
         self.assertEqual(response.status_code, 200)
         self.assertIn("available, relevant", response.json["reply"])
+
+    def test_demo_tutor_adjusts_guidance_to_selected_difficulty(self):
+        expected_guidance = {
+            "Beginner": "In simple terms",
+            "Intermediate": "workplace scenario",
+            "Advanced": "Compare this approach",
+        }
+        for difficulty, expected in expected_guidance.items():
+            self.client.post("/api/profile", json={"difficulty": difficulty})
+            with patch.dict(os.environ, {}, clear=True):
+                response = self.client.post(
+                    "/api/chat",
+                    json={"message": "Explain the critical path"},
+                )
+            self.assertEqual(response.status_code, 200)
+            self.assertIn(expected, response.json["reply"])
+
+    def test_progress_report_includes_metrics_and_topic_recommendation(self):
+        self.client.post(
+            "/api/profile",
+            json={"name": "Sam", "difficulty": "Intermediate"},
+        )
+        self.get_pert_question()
+        self.client.post("/api/evaluate", json={"answer": "6 days"})
+
+        self.client.post(
+            "/api/profile",
+            json={
+                "topic": "Stakeholder Management",
+                "difficulty": "Beginner",
+            },
+        )
+        with patch(
+            "pm_mentor.routes.learner.random.choice",
+            side_effect=lambda candidates: candidates[0],
+        ):
+            self.client.get("/api/question")
+        self.client.post("/api/evaluate", json={"answer": "incorrect"})
+
+        response = self.client.get("/api/progress/report")
+        report = response.get_data(as_text=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.mimetype, "text/plain")
+        self.assertEqual(
+            response.headers["Content-Disposition"],
+            'attachment; filename="pm-mentor-progress-report.txt"',
+        )
+        self.assertIn("Learner: Sam", report)
+        self.assertIn("Selected difficulty: Beginner", report)
+        self.assertIn("Questions attempted: 2", report)
+        self.assertIn("Correct answers: 1", report)
+        self.assertIn("Accuracy: 50%", report)
+        self.assertIn("Project Planning & Scheduling: 1/1 correct (100%)", report)
+        self.assertIn("Stakeholder Management: 0/1 correct (0%)", report)
+        self.assertIn("Recommended next lesson: Stakeholder Management fundamentals", report)
 
     def test_reset_clears_session_progress(self):
         self.client.get("/api/question")
@@ -222,6 +307,7 @@ class TutorApplicationTests(unittest.TestCase):
         )
 
     def test_chat_uses_gemini_defaults_without_sending_learner_name(self):
+        self.client.post("/api/profile", json={"difficulty": "Advanced"})
         mock_response = MagicMock()
         mock_response.__enter__.return_value.read.return_value = json.dumps(
             {"choices": [{"message": {"content": "Gemini tutor reply."}}]}
@@ -243,6 +329,10 @@ class TutorApplicationTests(unittest.TestCase):
         )
         self.assertEqual(payload["model"], "gemini-3.5-flash-lite")
         self.assertNotIn("Itesh", payload["messages"][0]["content"])
+        self.assertIn(
+            "complex PMP or PMI-ACP scenarios",
+            payload["messages"][0]["content"],
+        )
 
     def test_chat_rejects_non_https_provider_urls(self):
         with (

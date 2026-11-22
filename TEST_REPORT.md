@@ -2,14 +2,15 @@
 
 **Test date:** 22 November 2026  
 - **Previously deployed release:** `7ef2f07419cb69acb9a8415fb4d2b0ba6df28884`
-- **Current deployment:** `6b41578a8ccffeb1dc77a876530f08f69997342e`
+- **Learner and Gemini release:** `6b41578a8ccffeb1dc77a876530f08f69997342e`
+- **Package refactor release:** `763ef447425acd9872fe270d80b7f11265b61668`
 - **Deployment:** [https://pm-mentor.onrender.com](https://pm-mentor.onrender.com/)
 
 The historical scroll-test evidence below is for the previous release. Follow-up source validation and current deployment evidence are recorded separately.
 
 ## Result
 
-**Pass.** The deployed release was checked in Render and in a browser. The current local source also passes automated tests, lint, Python compilation, and architecture SVG validation; the package and diagram refactor has not yet been deployed.
+**Pass.** The deployed releases were checked in Render and in a browser. The latest difficulty and progress-report source changes pass automated tests, lint, Python compilation, whitespace validation, and SVG validation.
 
 ## Automated checks
 
@@ -26,7 +27,9 @@ The automated tests cover page and health endpoints, frontend module serving, de
 
 The source adds Gemini configuration, expands the question and demo-knowledge base, and changes the default learner name to Itesh. Local verification passed **19 tests**, Ruff, Python compilation, and `git diff --check`. Tests cover Gemini request defaults and secret-safe status, expanded CPMAI content, and migration of the legacy placeholder profile. Automated provider forwarding is mocked; a separate live check confirmed the configured Gemini provider.
 
-The later package and diagram refactor also passed all **19 tests**, Ruff, Python compilation, `git diff --check`, and SVG XML validation. This local refactor has not been deployed to Render.
+The package and diagram refactor passed all **19 tests**, Ruff, Python compilation, `git diff --check`, and SVG XML validation. Render deployed commit `763ef44`; `/healthz` returned `{"status":"ok"}` and `/api/status` confirmed Gemini was configured.
+
+The difficulty-selection and progress-report changes passed **22 tests**, Ruff, Python compilation, `git diff --check`, and SVG XML validation. Tests cover all topic/difficulty combinations, difficulty-specific tutor guidance, and report contents and download headers.
 
 - Render manually deployed commit `6b41578` successfully and reports it Live.
 - A fresh page load showed the learner name as **Itesh** and the updated Gemini setup instructions.

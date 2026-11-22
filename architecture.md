@@ -10,7 +10,7 @@ flowchart LR
 
     subgraph app["PM Mentor web app"]
         web["Web app<br/>Serves the screen and handles requests"]
-        tutor["Tutor and learning tools<br/>Choose questions · Check answers · Update progress"]
+        tutor["Tutor and learning tools<br/>Choose questions by topic and difficulty · Check answers"]
         content["Project-management knowledge<br/>Practice bank · Built-in explanations"]
         progress["Learner progress"]
         settings["Private service settings<br/>Model keys stay on the server"]
@@ -30,7 +30,7 @@ flowchart LR
     database -.-> note
 ```
 
-The browser handles the interface. The Flask app handles requests and keeps model credentials out of browser code. Practice questions come from the authored question bank; model calls are used for tutor chat when a provider is configured.
+The browser handles the interface. The Flask app handles requests and keeps model credentials out of browser code. Practice questions come from the authored question bank and match the learner's selected topic and difficulty; model calls are used for tutor chat when a provider is configured.
 
 ### Where to find the code
 
@@ -45,6 +45,8 @@ The browser handles the interface. The Flask app handles requests and keeps mode
 | `pm_mentor/serve.py` | Production Waitress entry point |
 | `static/js/` | Browser API client and learner-facing features |
 
+Learner progress can also be downloaded as a text report from `GET /api/progress/report`.
+
 ## Practice question and answer evaluation
 
 ```mermaid
@@ -57,10 +59,10 @@ sequenceDiagram
 
     Learner->>Browser: Choose Practice or Quiz
     Browser->>App: Ask for a question
-    App->>Questions: Select a question for the learner's topic
+    App->>Questions: Select a question for the learner's topic and difficulty
     Questions-->>App: Question and answer key
     App->>Progress: Save the active question
-    App-->>Browser: Send question without answer key
+    App-->>Browser: Send question, difficulty, and choices without answer key
     Browser-->>Learner: Show the question
 
     Learner->>Browser: Submit an answer

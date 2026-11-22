@@ -14,6 +14,7 @@ DEFAULT_LEARNER_NAME = "Itesh"
 QUESTION_BANK = [
     {
         "topic": "Project Planning & Scheduling",
+        "difficulty": "Intermediate",
         "question": (
             "A task has an optimistic estimate of 3 days, a most likely estimate of 5 days, "
             "and a pessimistic estimate of 13 days. What is the PERT expected duration?"
@@ -26,6 +27,7 @@ QUESTION_BANK = [
     },
     {
         "topic": "Stakeholder Management",
+        "difficulty": "Intermediate",
         "question": (
             "A stakeholder has high interest and high influence. Which engagement strategy "
             "is most appropriate?"
@@ -40,6 +42,7 @@ QUESTION_BANK = [
     },
     {
         "topic": "Agile Methodologies",
+        "difficulty": "Beginner",
         "question": (
             "Who owns the Product Backlog and is accountable for maximizing product value in Scrum?"
         ),
@@ -53,6 +56,7 @@ QUESTION_BANK = [
     },
     {
         "topic": "Risk Management",
+        "difficulty": "Intermediate",
         "question": (
             "A team identifies a future risk and agrees to add an extra test cycle only if "
             "the risk occurs. What strategy is this?"
@@ -68,6 +72,7 @@ QUESTION_BANK = [
     },
     {
         "topic": "Project Planning & Scheduling",
+        "difficulty": "Beginner",
         "question": (
             "Which planning artifact decomposes the total project scope into manageable "
             "deliverables and work packages?"
@@ -88,6 +93,7 @@ QUESTION_BANK = [
     },
     {
         "topic": "Project Planning & Scheduling",
+        "difficulty": "Advanced",
         "question": (
             "A critical-path activity slips by two days and no recovery action is taken. "
             "What is the direct effect on the schedule?"
@@ -112,6 +118,7 @@ QUESTION_BANK = [
     },
     {
         "topic": "Project Planning & Scheduling",
+        "difficulty": "Intermediate",
         "question": "A project's Cost Performance Index (CPI) is 0.80. What does this indicate?",
         "answer": "The project is over budget",
         "accepted": ["the project is over budget", "over budget", "cost overrun"],
@@ -129,6 +136,7 @@ QUESTION_BANK = [
     },
     {
         "topic": "Stakeholder Management",
+        "difficulty": "Beginner",
         "question": (
             "A stakeholder has low power but high interest in the project. "
             "What engagement approach is usually appropriate?"
@@ -144,6 +152,7 @@ QUESTION_BANK = [
     },
     {
         "topic": "Stakeholder Management",
+        "difficulty": "Advanced",
         "question": (
             "Which tool compares stakeholders' current and desired engagement levels "
             "to identify communication or involvement gaps?"
@@ -167,6 +176,7 @@ QUESTION_BANK = [
     },
     {
         "topic": "Agile Methodologies",
+        "difficulty": "Beginner",
         "question": (
             "In Scrum, which event lets stakeholders inspect the increment and provide "
             "feedback on the product?"
@@ -182,6 +192,7 @@ QUESTION_BANK = [
     },
     {
         "topic": "Agile Methodologies",
+        "difficulty": "Intermediate",
         "question": (
             "What is the main purpose of the Daily Scrum for the developers?"
         ),
@@ -205,6 +216,7 @@ QUESTION_BANK = [
     },
     {
         "topic": "Risk Management",
+        "difficulty": "Beginner",
         "question": (
             "Which document records identified risks, their owners, analysis, and planned "
             "responses?"
@@ -220,6 +232,7 @@ QUESTION_BANK = [
     },
     {
         "topic": "Risk Management",
+        "difficulty": "Intermediate",
         "question": (
             "A team adds a prototype test to reduce the chance that a technical risk will "
             "occur. Which threat response strategy is this?"
@@ -235,6 +248,7 @@ QUESTION_BANK = [
     },
     {
         "topic": "Risk Management",
+        "difficulty": "Intermediate",
         "question": (
             "A project purchases insurance so a third party bears the financial impact "
             "of a particular threat. Which response strategy is this?"
@@ -250,6 +264,7 @@ QUESTION_BANK = [
     },
     {
         "topic": "Leadership & Team Performance",
+        "difficulty": "Beginner",
         "question": (
             "A servant leader notices the team is blocked by a dependency and works to "
             "remove it. What leadership behavior is being demonstrated?"
@@ -275,6 +290,7 @@ QUESTION_BANK = [
     },
     {
         "topic": "CPMAI - AI Project Management",
+        "difficulty": "Beginner",
         "question": (
             "Before building an AI model, why should a project team assess data readiness?"
         ),
@@ -295,6 +311,157 @@ QUESTION_BANK = [
         "explanation": (
             "Data readiness checks whether relevant data exists, is accessible, and is "
             "sufficiently usable and representative for the intended AI outcome."
+        ),
+    },
+    {
+        "topic": "Agile Methodologies",
+        "difficulty": "Advanced",
+        "question": (
+            "Halfway through a Sprint, a high-value request arrives. The Sprint Goal is still "
+            "achievable, but the new work would displace committed scope. "
+            "What is the best next step?"
+        ),
+        "answer": "Renegotiate scope while protecting the Sprint Goal",
+        "accepted": [
+            "renegotiate scope while protecting the sprint goal",
+            "protect the sprint goal while negotiating scope",
+            "discuss scope with the product owner while protecting the sprint goal",
+        ],
+        "choices": [
+            "Add the new work immediately and extend the Sprint",
+            "Cancel the Sprint because a stakeholder requested a change",
+            "Renegotiate scope while protecting the Sprint Goal",
+            "Accept the change without discussing its impact",
+        ],
+        "hint": "Keep the Sprint Goal stable while considering whether scope can be adjusted.",
+        "explanation": (
+            "The Product Owner and Developers can renegotiate scope as they learn more, "
+            "provided the Sprint Goal is not endangered."
+        ),
+    },
+    {
+        "topic": "Risk Management",
+        "difficulty": "Advanced",
+        "question": (
+            "A threat occurs despite mitigation, and the trigger for its approved contingency "
+            "response is met. What should the project manager do next?"
+        ),
+        "answer": "Execute the approved contingency response and update the risk record",
+        "accepted": [
+            "execute the approved contingency response and update the risk record",
+            "execute the contingency response",
+            "implement the planned contingency response",
+        ],
+        "choices": [
+            "Ignore the event because mitigation was already attempted",
+            "Execute the approved contingency response and update the risk record",
+            "Close the risk without assessing the impact",
+            "Replace the response with an unapproved workaround",
+        ],
+        "hint": "The agreed trigger has been met, so use the response planned for that event.",
+        "explanation": (
+            "When the trigger occurs, implement the approved contingency response, assess "
+            "the resulting impact, and update the risk record."
+        ),
+    },
+    {
+        "topic": "Leadership & Team Performance",
+        "difficulty": "Intermediate",
+        "question": (
+            "Two experienced team members disagree about a design approach. Which action best "
+            "supports servant leadership?"
+        ),
+        "answer": "Facilitate a discussion so the team can decide using shared criteria",
+        "accepted": [
+            "facilitate a discussion so the team can decide using shared criteria",
+            "facilitate a team decision using shared criteria",
+            "help the team compare options and reach a decision",
+        ],
+        "choices": [
+            "Choose the design yourself to end the disagreement",
+            "Facilitate a discussion so the team can decide using shared criteria",
+            "Ask the sponsor to choose without the team's input",
+            "Avoid the issue and let the disagreement continue",
+        ],
+        "hint": "Enable the team's decision-making rather than taking ownership away from them.",
+        "explanation": (
+            "A servant leader facilitates collaboration and helps the team make an informed "
+            "decision instead of imposing a solution."
+        ),
+    },
+    {
+        "topic": "Leadership & Team Performance",
+        "difficulty": "Advanced",
+        "question": (
+            "Several departments repeatedly redirect team members, causing missed Sprint "
+            "Goals. What should the project leader do first?"
+        ),
+        "answer": "Resolve priority conflicts with sponsors and protect team focus",
+        "accepted": [
+            "resolve priority conflicts with sponsors and protect team focus",
+            "resolve conflicting priorities with sponsors and protect team focus",
+            "negotiate priorities and protect the team's focus",
+        ],
+        "choices": [
+            "Increase individual workload targets",
+            "Remove team members who raise the conflict",
+            "Resolve priority conflicts with sponsors and protect team focus",
+            "Continue planning as if team capacity were unchanged",
+        ],
+        "hint": "Address the organizational cause of the interruptions and align decision-makers.",
+        "explanation": (
+            "The leader should make the competing priorities visible, work with sponsors and "
+            "functional leaders to resolve them, and protect the team's ability to deliver."
+        ),
+    },
+    {
+        "topic": "CPMAI - AI Project Management",
+        "difficulty": "Intermediate",
+        "question": (
+            "An AI pilot produces accurate results, but users distrust them because teams use "
+            "different definitions for the input labels. What should the project team do next?"
+        ),
+        "answer": "Validate data definitions and labels with domain experts and users",
+        "accepted": [
+            "validate data definitions and labels with domain experts and users",
+            "align data definitions with domain experts and users",
+            "standardize and validate the labels with users",
+        ],
+        "choices": [
+            "Increase model complexity immediately",
+            "Validate data definitions and labels with domain experts and users",
+            "Ignore user feedback because accuracy is high",
+            "Deploy the model to more users without review",
+        ],
+        "hint": "Reliable AI depends on shared, meaningful labels as well as model accuracy.",
+        "explanation": (
+            "Domain experts and users should validate shared definitions and label quality "
+            "before the team treats the pilot's results as trustworthy."
+        ),
+    },
+    {
+        "topic": "CPMAI - AI Project Management",
+        "difficulty": "Advanced",
+        "question": (
+            "After deployment, the data patterns shift and model performance declines. What "
+            "is the best governance response?"
+        ),
+        "answer": "Use monitoring thresholds and an approved human-reviewed retraining process",
+        "accepted": [
+            "use monitoring thresholds and an approved human-reviewed retraining process",
+            "monitor for drift and retrain through an approved process with human review",
+            "use defined monitoring and controlled retraining with human oversight",
+        ],
+        "choices": [
+            "Retrain automatically on all new data without review",
+            "Ignore the decline if the model once passed testing",
+            "Use monitoring thresholds and an approved human-reviewed retraining process",
+            "Delete the model without assessing operational impact",
+        ],
+        "hint": "Manage model drift with defined monitoring, decision thresholds, and oversight.",
+        "explanation": (
+            "The team should monitor performance against agreed thresholds and use a "
+            "controlled, human-reviewed process to decide whether retraining is appropriate."
         ),
     },
 ]

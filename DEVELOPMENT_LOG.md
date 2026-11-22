@@ -153,10 +153,23 @@ This log records the distinct requests, implementation decisions, checks, and de
 
 **Verification:** All 19 automated tests passed; Ruff, Python compilation, `git diff --check`, and SVG XML validation passed.
 
+### 12. Make difficulty selection adaptive and add a learner progress report
+
+**Request:** Fix difficulty selection so it meaningfully changes the learning experience, and add a basic learner progress summary report.
+
+**Work:**
+
+- Added beginner, intermediate, and advanced question variants for every topic; practice and quiz requests now select a question matching both the saved topic and difficulty.
+- Made Learn, Practice, Quiz, and Challenge prompts explicitly reflect the selected difficulty. The AI tutor prompt and built-in responses now give distinct guidance for each level.
+- Displayed selected difficulty in the learner profile and on practice questions.
+- Added a per-topic breakdown to the summary and a downloadable report with learner settings, attempts, accuracy, strengths, practice needs, and a next-lesson recommendation.
+
+**Verification:** 22 automated tests passed; Ruff, Python compilation, and SVG XML validation passed.
+
 ## Current state and known limits
 
 - The live service reports Google Gemini when `GEMINI_API_KEY` is attached to the Render service through its environment configuration.
 - The default no-key behavior remains the built-in demo tutor. The live OpenAI-compatible alternative has not been tested with a real credential.
-- Practice questions are authored and randomly selected by topic; model-generated questions on demand remain a possible future improvement.
+- Practice questions are authored and randomly selected by topic and difficulty; model-generated questions on demand remain a possible future improvement.
 - Render Free may sleep while idle and its local SQLite filesystem is ephemeral.
 - Gemini free-tier use has limits and may use prompts to improve provider products. Do not send sensitive or confidential information.

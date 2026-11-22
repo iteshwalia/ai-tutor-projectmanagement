@@ -176,7 +176,7 @@ button { cursor: pointer; }
 .primary-button { height: 43px; border: 0; border-radius: 8px; background: var(--blue); color: white; font-weight: 700; margin-top: 4px; }
 .primary-button:hover { background: var(--blue-dark); }
 
-.summary-modal { width: min(520px, calc(100vw - 32px)); }
+.summary-modal { width: min(520px, calc(100vw - 32px)); max-height: calc(100vh - 32px); overflow-y: auto; }
 .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .metric { height: 82px; border: 1px solid var(--line); border-radius: 9px; display: grid; place-content: center; text-align: center; background: #fafbfc; }
 .metric span { font-family: "Manrope", sans-serif; font-size: 24px; font-weight: 800; }
@@ -187,9 +187,14 @@ button { cursor: pointer; }
 .tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
 .tag-list span { border-radius: 20px; background: #edf8f3; color: #4a826a; padding: 7px 10px; font-size: 10.5px; }
 .tag-list.weak span { background: #fff4e5; color: #966627; }
+.topic-breakdown { display: grid; gap: 7px; }
+.topic-result { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 11px; }
+.topic-result span { color: #5f6b7c; }
+.topic-result strong { white-space: nowrap; color: var(--ink); }
 .recommendation { margin-top: 16px; border-radius: 9px; background: var(--navy); color: white; padding: 13px 15px; display: grid; gap: 4px; }
 .recommendation span { color: #9dabc0; font-size: 9.5px; text-transform: uppercase; letter-spacing: .08em; }
 .recommendation strong { font-size: 12.5px; }
+.report-download { display: flex; align-items: center; justify-content: center; text-decoration: none; margin-top: 14px; }
 
 .typing { display: flex; gap: 4px; padding: 7px 2px; }
 .typing i { width: 6px; height: 6px; border-radius: 50%; background: #94a0b2; animation: bounce 1s infinite alternate; }
