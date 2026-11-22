@@ -2,6 +2,8 @@
 
 This log records the distinct requests, implementation decisions, checks, and deployment follow-ups made while building PM Mentor. Repeated requests are grouped into the step they affected. Prompt descriptions are summarized from the project brief and follow-up instructions; they are not a verbatim transcript. No API credentials are recorded here.
 
+A concise, reader-friendly Word edition is available in [DEVELOPMENT_LOG.docx](DEVELOPMENT_LOG.docx).
+
 ## Development timeline
 
 ### 1. Define the learning problem and audience
