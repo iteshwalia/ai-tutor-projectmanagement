@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: pm-mentor
+    runtime: docker
+    plan: free
+    autoDeploy: true
+    healthCheckPath: /healthz
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_SECRET_KEY
+        generateValue: true
+      - key: LOG_LEVEL
+        value: INFO

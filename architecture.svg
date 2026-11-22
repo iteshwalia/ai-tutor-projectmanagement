@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="620" viewBox="0 0 1100 620">
+  <rect width="1100" height="620" fill="#f7f9fc"/>
+  <text x="550" y="55" text-anchor="middle" font-family="Arial" font-size="30" font-weight="700" fill="#18243a">PM Mentor Application Architecture</text>
+
+  <rect x="50" y="190" width="210" height="150" rx="18" fill="#edf4ff" stroke="#3973dd" stroke-width="2"/>
+  <text x="155" y="235" text-anchor="middle" font-family="Arial" font-size="20" font-weight="700" fill="#18243a">Learner Browser</text>
+  <text x="155" y="270" text-anchor="middle" font-family="Arial" font-size="15" fill="#738096">HTML + CSS</text>
+  <text x="155" y="295" text-anchor="middle" font-family="Arial" font-size="15" fill="#738096">JavaScript</text>
+
+  <rect x="355" y="150" width="390" height="230" rx="18" fill="#18243a"/>
+  <text x="550" y="195" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700" fill="#ffffff">Flask Web Application</text>
+  <rect x="390" y="220" width="320" height="58" rx="10" fill="#273958"/>
+  <text x="550" y="255" text-anchor="middle" font-family="Arial" font-size="16" fill="#ffffff">Jinja Templates + Static Assets</text>
+  <rect x="390" y="292" width="320" height="58" rx="10" fill="#273958"/>
+  <text x="550" y="327" text-anchor="middle" font-family="Arial" font-size="16" fill="#ffffff">/api/chat, profile, question, progress</text>
+
+  <rect x="840" y="105" width="210" height="120" rx="18" fill="#edf8f3" stroke="#38a87a" stroke-width="2"/>
+  <text x="945" y="145" text-anchor="middle" font-family="Arial" font-size="18" font-weight="700" fill="#18243a">Tutor Logic</text>
+  <text x="945" y="177" text-anchor="middle" font-family="Arial" font-size="14" fill="#738096">Questions + Evaluation</text>
+  <text x="945" y="202" text-anchor="middle" font-family="Arial" font-size="14" fill="#738096">Progress Tracking</text>
+
+  <rect x="840" y="300" width="210" height="120" rx="18" fill="#fff4e5" stroke="#df9a36" stroke-width="2"/>
+  <text x="945" y="340" text-anchor="middle" font-family="Arial" font-size="18" font-weight="700" fill="#18243a">AI Provider</text>
+  <text x="945" y="372" text-anchor="middle" font-family="Arial" font-size="14" fill="#738096">Optional OpenAI-compatible</text>
+  <text x="945" y="397" text-anchor="middle" font-family="Arial" font-size="14" fill="#738096">API via server environment</text>
+
+  <rect x="355" y="440" width="390" height="110" rx="18" fill="#f1effc" stroke="#806bd1" stroke-width="2"/>
+  <text x="550" y="482" text-anchor="middle" font-family="Arial" font-size="18" font-weight="700" fill="#18243a">Signed Flask Session Cookie</text>
+  <text x="550" y="515" text-anchor="middle" font-family="Arial" font-size="14" fill="#738096">Profile, active question, and progress</text>
+
+  <line x1="260" y1="265" x2="355" y2="265" stroke="#3973dd" stroke-width="3"/>
+  <line x1="745" y1="230" x2="840" y2="165" stroke="#3973dd" stroke-width="3"/>
+  <line x1="745" y1="330" x2="840" y2="360" stroke="#3973dd" stroke-width="3"/>
+  <line x1="550" y1="380" x2="550" y2="440" stroke="#806bd1" stroke-width="3"/>
+  <text x="550" y="585" text-anchor="middle" font-family="Arial" font-size="13" fill="#738096">Browser credentials are unnecessary; Flask handles optional AI integration.</text>
+</svg>

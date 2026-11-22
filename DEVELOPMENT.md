@@ -1,0 +1,253 @@
+# Development Story of PM Mentor
+
+## 1. What we set out to build
+
+PM Mentor was created to help working professionals learn project management in a practical, interactive way. Instead of building a general chatbot, we narrowed the focus to concepts that professionals encounter in real projects, including planning, Agile delivery, stakeholders, risk, leadership, PERT scheduling, and CPMAI.
+
+The aim was simple: a learner should be able to choose a topic, receive an explanation suited to their level, answer a question, see useful feedback, and understand what to practice next.
+
+## 2. Prompts used during development
+
+Development began with the project brief, which described the audience, tutor behavior, learning modes, personalization, question generation, progress tracking, and deployment needs. We translated that brief into a series of practical prompts.
+
+### Initial interface prompt
+
+> “Build a project-management tutor for working professionals, with a polished chat interface, topic navigation, learner profile, and clear study actions.”
+
+This became the first visual prototype. It established the learning workspace, sidebar, chat area, profile card, and four learning modes.
+
+### Personalization prompt
+
+> “Let the learner enter a name, current level, focus topic, and preferred difficulty, and use that information in the welcome message and learning experience.”
+
+This helped us make the app feel specific to the learner rather than presenting the same generic advice to everyone.
+
+### Teaching behavior prompt
+
+> “Explain concepts simply, use workplace examples, give hints before answers, encourage retrying, adapt difficulty, and redirect unrelated questions to project management.”
+
+We used this as the teaching philosophy for both the demo responses and the optional AI provider.
+
+### Practice and assessment prompt
+
+> “Generate project-management questions dynamically. Ask a question, accept the learner's answer, mark it correct or incorrect, explain the result, and provide encouragement.”
+
+This prompted the PERT, stakeholder, Agile, risk, and CPMAI question flow.
+
+### Progress prompt
+
+> “Track attempts, correct answers, strong areas, weak areas, and the most useful next lesson.”
+
+This led to the performance summary and the weekly goal display.
+
+### Technical packaging prompt
+
+> “Turn the interface into a proper Python application, add a Flask backend, use server-side API credentials, and provide deployment instructions.”
+
+The answer to this prompt was the final Flask structure, JSON APIs, Dockerfile, and architecture diagrams.
+
+## 3. Development iterations
+
+### Iteration 1: Creating the first working prototype
+
+We started with HTML, CSS, and JavaScript. The first version focused on the visual experience: a professional sidebar, conversation panel, learner profile, suggested prompts, and progress summary.
+
+At this stage, all interactions were handled in the browser. The application was usable, but it had no Python backend or persistent server-side session behavior.
+
+### Iteration 2: Adding personalization
+
+We added profile controls for:
+
+- Learner name
+- Current level
+- Preferred difficulty
+- Study topic
+
+The profile modal also became the place to select a different topic. The interface began updating names, avatars, topics, and welcome text from the learner's choices.
+
+### Iteration 3: Improving the learning modes
+
+Learn mode was initially a free chat. Practice, Quiz, and Challenge modes were then connected to question prompts. This made the modes behave differently in the interface and gave learners a clear way to move between explanation and assessment.
+
+We also added:
+
+- Multiple-choice project-management questions
+- A hint before revealing a difficult answer
+- Explicit correct and incorrect feedback
+- Short explanations after evaluation
+- Encouraging retry language
+
+### Iteration 4: Adding progress and recommendations
+
+We introduced session progress metrics, including attempted questions and correct answers. Results began updating topic areas so the summary could identify both strengths and weak areas.
+
+The summary modal was enhanced to show:
+
+- Total attempted questions
+- Correct answers
+- Accuracy percentage
+- Strong areas
+- Areas needing practice
+- A recommended next lesson
+
+### Iteration 5: Moving to a Flask application
+
+The static files were reorganized into:
+
+```text
+app.py
+templates/index.html
+static/app.js
+static/styles.css
+requirements.txt
+Dockerfile
+```
+
+The HTML, JavaScript, and CSS remained the user-facing application, while Flask became the server responsible for routes, sessions, and optional AI calls.
+
+### Iteration 6: Securing AI integration
+
+The original browser-side settings modal was changed so it no longer collected API keys. Instead, the application now recommends server environment variables:
+
+- `OPENAI_API_KEY`
+- `OPENAI_API_URL`
+- `OPENAI_MODEL`
+
+This was an important improvement because credentials should not be embedded in browser code or shared with other users.
+
+When no provider is configured, the app continues to work using a built-in demo knowledge layer.
+
+### Iteration 7: Deployment and documentation
+
+The project now includes:
+
+- Flask local-server instructions
+- Docker build and run instructions
+- Mermaid architecture documentation
+- A downloadable-style SVG architecture diagram
+- This development story
+
+### Iteration 8: Preparing the repository for development and deployment
+
+After moving the project into its dedicated VS Code workspace, we added:
+
+- A standard `.vscode` setup with a launch profile, tasks, and extension recommendations
+- `.gitignore`, `.gitattributes`, `.dockerignore`, and a GitHub Actions workflow
+- A pinned production requirements file and a separate developer-tools file
+- A `.env.example` template that contains no real credentials
+- Waitress as the production WSGI server and a non-root Docker user
+- A required production secret key, secure cookies, security headers, and request-size limits
+- SQLite-backed learner state; the browser cookie now carries only an opaque signed session ID
+- API answer-key privacy and exact answer matching
+- Automated tests for API behavior, session isolation, model forwarding, and production configuration
+
+We also removed duplicate, unused browser-side tutor logic so the Flask backend is the source of truth for questions, answers, and progress.
+
+### Iteration 9: Separating frontend and backend responsibilities
+
+The final refactor replaced the single browser script and crowded Flask module with small, named components:
+
+- The frontend entry point now loads ES modules from `static/js/`.
+- `api.js` owns HTTP requests; `chat.js`, `modes.js`, `profile.js`, and `progress.js` own their UI behavior.
+- `app.py` now focuses on application creation, shared configuration, security headers, and route registration.
+- `backend/routes/` contains separate pages, health, learner, and tutor endpoints.
+- `backend/services/tutor.py` owns model-provider calls and the demo response path.
+- `backend/database.py` owns SQLite connections and learner state.
+- `backend/content.py` holds quiz and demo learning content.
+
+This makes it easier to find a feature, test it in isolation, and add new behavior without growing a single application file indefinitely.
+
+## 4. Testing performed
+
+We tested the application at both browser-facing and API levels.
+
+### Concept and chat tests
+
+| Input or action | Expected result | Outcome |
+|---|---|---|
+| Open the home page | The interface should load with navigation and chat | Passed |
+| "Hello" | A friendly project-management response should appear | Basic chat response path |
+| "Explain the critical path" | A clear explanation and workplace example | Passed |
+| "What is Scrum?" | A simple Agile explanation | Demo fallback path |
+| "Give me a practice question" | A dynamically selected question should appear | Passed |
+| "What is today's weather?" | The tutor should redirect briefly to project management | Model prompt directs this; demo response remains on topic |
+
+### Answer evaluation tests
+
+We tested the PERT question:
+
+> “A task has an optimistic estimate of 3 days, a most likely estimate of 5 days, and a pessimistic estimate of 13 days. What is the PERT expected duration?”
+
+An answer of **“6 days”** was evaluated as correct. The server returned the correct answer, a PERT formula explanation, and updated progress of one attempt and one correct result.
+
+An incorrect answer should receive:
+
+- A constructive “not quite” message
+- A hint
+- The correct answer
+- A short explanation
+- Encouragement to continue
+
+### Automated and API verification
+
+The automated suite (`py -m pytest -q`) covers:
+
+- Home and health endpoints
+- Demo response and configured model request forwarding
+- Input validation for chat, profile, and answer endpoints
+- Correct and incorrect question evaluation, including rejecting substring matches
+- Session progress update and reset
+- Question-answer privacy and opaque cookie contents
+- Secure-cookie and security-header behavior
+- Production secret-key validation
+
+The original prototype was also smoke-tested through the browser-facing home page and chat, question, progress, and evaluation endpoints. Automated browser interaction and a live external model call remain manual release checks because they require a browser session and a valid provider credential.
+
+The current release-candidate checks completed with **14 passing tests**, clean Ruff checks, and successful Python compilation. A Waitress production-mode smoke test returned HTTP 200 from `/healthz` and verified secure session-cookie and HSTS headers. Docker image building was not performed because Docker is not installed in the environment.
+
+## 5. System prompt used for the AI tutor
+
+The following prompt defines the intended AI behavior:
+
+```text
+You are PM Mentor, a tutor for working professionals studying project management.
+Adapt your explanation to the learner's current level and difficulty preference.
+
+Explain concepts in simple, practical language and use workplace examples.
+Give hints before revealing an answer during practice.
+Ask the learner a focused question after explaining a concept.
+Evaluate answers constructively and explain why an answer is correct or incorrect.
+If the answer is wrong, provide a hint, the correct answer, an explanation, and encouragement.
+Adapt follow-up questions to the learner's performance.
+Generate original PMP- or PMI-ACP-style questions rather than repeating a fixed question bank.
+For unrelated questions, briefly redirect the learner to project management.
+End with a useful next step or learning recommendation.
+```
+
+## 6. Key improvements
+
+During development, the project changed in several important ways:
+
+1. The app became a complete web application rather than a collection of static mockups.
+2. Learners can personalize their name, level, topic, and difficulty.
+3. Learning content now fits Learn, Practice, Quiz, and Challenge modes.
+4. Answer evaluation includes hints, explanations, and encouragement.
+5. SQLite-backed learner records track attempts and correct answers.
+6. The summary recommends practice based on weak areas.
+7. API credentials were moved away from browser JavaScript.
+8. The app now includes a demo mode that works without an AI key.
+9. Docker packaging allows repeatable deployment.
+10. Architecture and development documentation support the final presentation.
+
+## 7. Presentation demonstration
+
+For a short live demonstration:
+
+1. Open `http://127.0.0.1:5000`.
+2. Introduce the target audience: working professionals preparing for or improving project-manager responsibilities.
+3. Open the learner profile and explain how name, level, topic, and difficulty affect the experience.
+4. Select Learn and ask for an explanation of the critical path.
+5. Select Practice and answer a PERT question correctly or incorrectly.
+6. Open Today's Performance to show attempts, accuracy, weak areas, strong areas, and the next lesson.
+7. Explain how Flask serves the interface and protects optional AI credentials.
+8. Present the architecture diagram and Docker deployment options.

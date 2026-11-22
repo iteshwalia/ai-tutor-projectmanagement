@@ -1,0 +1,13 @@
+.git
+.venv
+venv
+__pycache__
+.pytest_cache
+.ruff_cache
+.env
+instance
+.vscode
+tests
+render.yaml
+requirements-dev.txt
+DEVELOPMENT.md
