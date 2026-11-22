@@ -162,6 +162,7 @@ This log records the distinct requests, implementation decisions, checks, and de
 - Added beginner, intermediate, and advanced question variants for every topic; practice and quiz requests now select a question matching both the saved topic and difficulty.
 - Made Learn, Practice, Quiz, and Challenge prompts explicitly reflect the selected difficulty. The AI tutor prompt and built-in responses now give distinct guidance for each level.
 - Displayed selected difficulty in the learner profile and on practice questions.
+- Fixed the profile editor's missing `openModal` import, which the live browser reported as a `ReferenceError` and which prevented the difficulty control from opening.
 - Added a per-topic breakdown to the summary and a downloadable report with learner settings, attempts, accuracy, strengths, practice needs, and a next-lesson recommendation.
 
 **Verification:** 22 automated tests passed; Ruff, Python compilation, and SVG XML validation passed.

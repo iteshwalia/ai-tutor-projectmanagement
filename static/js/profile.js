@@ -1,5 +1,5 @@
 import { learnerAPI, tutorAPI } from "./api.js";
-import { addMessage, closeModal, escapeHTML } from "./dom.js";
+import { addMessage, closeModal, escapeHTML, openModal } from "./dom.js";
 import { state } from "./state.js";
 
 export function updateProfileUI() {
