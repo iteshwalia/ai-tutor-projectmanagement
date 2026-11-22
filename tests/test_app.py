@@ -183,11 +183,20 @@ class TutorApplicationTests(unittest.TestCase):
         self.assertNotIn("test-secret-token", json.dumps(response.json))
 
     def test_status_reports_gemini_provider_without_secret(self):
-        with patch.dict(os.environ, {"GEMINI_API_KEY": "test-gemini-secret"}, clear=True):
+        with patch.dict(
+            os.environ,
+            {
+                "GEMINI_API_KEY": "test-gemini-secret",
+                "OPENAI_API_KEY": "test-openai-secret",
+            },
+            clear=True,
+        ):
             response = self.client.get("/api/status")
         self.assertEqual(response.json["provider"], "Google Gemini")
+        self.assertEqual(response.json["key_name"], "GEMINI_API_KEY")
         self.assertEqual(response.json["model"], "gemini-3.5-flash-lite")
         self.assertNotIn("test-gemini-secret", json.dumps(response.json))
+        self.assertNotIn("test-openai-secret", json.dumps(response.json))
 
     def test_chat_forwards_message_to_configured_model(self):
         mock_response = MagicMock()
