@@ -1,3 +1,5 @@
+const modalReturnFocus = new Map();
+
 export function escapeHTML(value) {
   return String(value).replace(/[&<>"']/g, char => ({
     "&": "&amp;",
@@ -36,6 +38,14 @@ export function removeElement(element) {
 
 export function openModal(id) {
   const modal = document.getElementById(id);
+  const activeElement = document.activeElement;
+  if (
+    activeElement instanceof HTMLElement &&
+    activeElement !== document.body &&
+    !modal.contains(activeElement)
+  ) {
+    modalReturnFocus.set(id, activeElement);
+  }
   modal.classList.add("open");
   modal.setAttribute("aria-hidden", "false");
 }
@@ -44,6 +54,9 @@ export function closeModal(id) {
   const modal = document.getElementById(id);
   modal.classList.remove("open");
   modal.setAttribute("aria-hidden", "true");
+  const returnFocus = modalReturnFocus.get(id);
+  modalReturnFocus.delete(id);
+  if (returnFocus?.isConnected) returnFocus.focus();
 }
 
 export function bindModalEvents() {

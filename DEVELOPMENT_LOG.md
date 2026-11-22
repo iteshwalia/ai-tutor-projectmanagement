@@ -163,9 +163,10 @@ This log records the distinct requests, implementation decisions, checks, and de
 - Made Learn, Practice, Quiz, and Challenge prompts explicitly reflect the selected difficulty. The AI tutor prompt and built-in responses now give distinct guidance for each level.
 - Displayed selected difficulty in the learner profile and on practice questions.
 - Fixed the profile editor's missing `openModal` import, which the live browser reported as a `ReferenceError` and which prevented the difficulty control from opening.
+- Restored focus to the button that opened a modal when it closes, avoiding focus remaining inside an `aria-hidden` profile dialog.
 - Added a per-topic breakdown to the summary and a downloadable report with learner settings, attempts, accuracy, strengths, practice needs, and a next-lesson recommendation.
 
-**Verification:** 22 automated tests passed; Ruff, Python compilation, and SVG XML validation passed.
+**Verification:** 22 automated tests passed; Ruff, Python compilation, and SVG XML validation passed. The live profile editor was tested by selecting Advanced and then restoring the original Intermediate setting.
 
 ## Current state and known limits
 
