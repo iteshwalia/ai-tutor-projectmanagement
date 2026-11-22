@@ -151,5 +151,6 @@ Review `git status` before committing. `.gitignore` excludes local environments,
 ## Project documentation
 
 - [Development story, prompts, iterations, and test history](DEVELOPMENT.md)
+- [Latest test report and deployment verification](TEST_REPORT.md)
 - [Architecture diagram and component responsibilities](architecture.md)
 - [Architecture SVG](architecture.svg)
