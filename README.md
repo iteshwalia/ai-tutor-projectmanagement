@@ -51,6 +51,13 @@ python app.py
 | SQLite store | Stores learner profile, active question, and progress on the server in `instance/pm_mentor.sqlite3` |
 | AI provider | Optional model completion service contacted only by the backend |
 
+## Architecture and sequence diagrams
+
+- [System architecture](architecture.md#system-architecture)
+- [Practice question and evaluation sequence](architecture.md#practice-question-and-answer-evaluation)
+- [Tutor chat sequence](architecture.md#tutor-chat-with-optional-model-provider)
+- Standalone [architecture SVG](architecture.svg) for a browser or diagram-capable editor.
+
 ```text
 app.py                       Application factory and configuration
 backend/

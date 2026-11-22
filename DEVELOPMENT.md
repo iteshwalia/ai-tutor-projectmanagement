@@ -121,7 +121,7 @@ The project now includes:
 
 - Flask local-server instructions
 - Docker build and run instructions
-- Mermaid architecture documentation
+- Mermaid system architecture and interaction-sequence documentation
 - A downloadable-style SVG architecture diagram
 - This development story
 
