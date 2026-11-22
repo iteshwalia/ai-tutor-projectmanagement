@@ -9,7 +9,7 @@ The historical scroll-test evidence below is for the previous release. Follow-up
 
 ## Result
 
-**Pass, with an AI-provider limitation.** Automated tests, lint, and Python compilation passed. The scroll fix was verified in the live browser, and the current source was deployed and checked in a fresh browser page. The app uses its built-in demo tutor because no model API key is configured.
+**Pass.** Automated tests, lint, and Python compilation passed. The current source is deployed; a fresh browser check confirmed the Itesh profile and Gemini configuration. A live Gemini response was also verified.
 
 ## Automated checks
 
@@ -24,11 +24,13 @@ The automated tests cover page and health endpoints, frontend module serving, de
 
 ## Follow-up source validation
 
-The current source adds Gemini configuration, expands the question and demo-knowledge base, and changes the default learner name to Itesh. Local verification passed **19 tests**, Ruff, Python compilation, and `git diff --check`. Tests cover Gemini request defaults and secret-safe status, expanded CPMAI content, and migration of the legacy placeholder profile. The Gemini request is mocked; no real API key has been used.
+The current source adds Gemini configuration, expands the question and demo-knowledge base, and changes the default learner name to Itesh. Local verification passed **19 tests**, Ruff, Python compilation, and `git diff --check`. Tests cover Gemini request defaults and secret-safe status, expanded CPMAI content, and migration of the legacy placeholder profile. Automated provider forwarding is mocked; a separate live check confirmed the configured Gemini provider.
 
 - Render manually deployed commit `6b41578` successfully and reports it Live.
 - A fresh page load showed the learner name as **Itesh** and the updated Gemini setup instructions.
 - The already-open browser tab still displayed the older cached page until refreshed or reopened.
+- After the Gemini environment group was connected, `GET /api/status` reported `api_configured: true`, `key_name: GEMINI_API_KEY`, provider `Google Gemini`, and model `gemini-3.5-flash-lite`.
+- A harmless live chat prompt (“Explain the critical path in one sentence.”) returned a project-management explanation, and the UI identified the source as Google Gemini.
 
 ## Live deployment checks
 
@@ -39,7 +41,7 @@ The current source adds Gemini configuration, expands the question and demo-know
 
 ## Limitations and follow-up
 
-- The real external-model request was **not** tested with a live credential. The current source supports Google Gemini with `GEMINI_API_KEY` and other OpenAI-compatible providers with `OPENAI_API_KEY`; automated provider forwarding uses mocked HTTP responses.
+- A live Gemini request was verified. The OpenAI-compatible alternative has not been tested with a live credential; automated provider-forwarding tests use mocked HTTP responses.
 - Gemini's free tier has usage limits, and Google may use free-tier prompts to improve its products. Do not send sensitive, confidential, or personally identifying information; check Google's current [Gemini API terms](https://ai.google.dev/gemini-api/terms).
 - The Render Free service can sleep while idle, and its local SQLite storage is ephemeral. Cold starts and loss of learner progress after restarts or redeploys are expected on this tier.
 - The repository is deployed from a public-repository URL. New commits may require a manual Render deploy unless the repository is connected through Render's Git provider integration.
