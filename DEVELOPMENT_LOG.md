@@ -202,6 +202,12 @@ This log records the distinct requests, implementation decisions, checks, and de
 
 **Verification:** Both DOCX files reopened successfully and their key test results and coverage sections were verified.
 
+### 16. Document the user experience rationale and process
+
+**Request:** Create a report covering user-experience thinking and the steps followed during development.
+
+**Work:** Created Markdown, PDF, and Word versions of the [user experience and development process report](USER_EXPERIENCE_REPORT.md). It describes the intended learner, design goals, end-to-end journey, development sequence, validation evidence, constraints, and suggested next usability checks. The report distinguishes design rationale from formal user research, which has not been documented.
+
 ## Current state and known limits
 
 - The live service reports Google Gemini when `GEMINI_API_KEY` is attached to the Render service through its environment configuration.
