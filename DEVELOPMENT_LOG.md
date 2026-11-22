@@ -168,6 +168,19 @@ This log records the distinct requests, implementation decisions, checks, and de
 
 **Verification:** 22 automated tests passed; Ruff, Python compilation, and SVG XML validation passed. The live profile editor was tested by selecting Advanced and then restoring the original Intermediate setting.
 
+### 13. Make profile-save feedback visible
+
+**Issue reported:** The learner-profile dialog appeared not to close after changing difficulty and pressing Save.
+
+**Investigation and work:**
+
+- Reproduced a successful live save: the profile endpoint returned HTTP 200, the selected difficulty was applied, and the dialog closed.
+- Found that a failed save left the dialog open but put its error message in the chat behind the dialog, making the failure easy to miss.
+- Added a disabled “Saving…” button state while the profile request is in flight.
+- Added an accessible in-dialog error message so a failed save is visible and the learner can retry without losing the form.
+
+**Verification:** All 22 automated tests passed. A live browser save changed the difficulty and closed the dialog; the original preference was restored afterward. Failure-state feedback is covered by the updated dialog UI.
+
 ## Current state and known limits
 
 - The live service reports Google Gemini when `GEMINI_API_KEY` is attached to the Render service through its environment configuration.

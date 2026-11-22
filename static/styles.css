@@ -175,6 +175,8 @@ button { cursor: pointer; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .primary-button { height: 43px; border: 0; border-radius: 8px; background: var(--blue); color: white; font-weight: 700; margin-top: 4px; }
 .primary-button:hover { background: var(--blue-dark); }
+.primary-button:disabled { cursor: wait; opacity: .7; }
+.form-status { margin: 0; color: #b42318; font-size: 12px; }
 
 .summary-modal { width: min(520px, calc(100vw - 32px)); max-height: calc(100vh - 32px); overflow-y: auto; }
 .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }

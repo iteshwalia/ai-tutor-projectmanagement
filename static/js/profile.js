@@ -29,17 +29,31 @@ export async function loadProfile() {
 
 async function saveProfile(event) {
   event.preventDefault();
+  const saveButton = document.querySelector("#profileForm button[type='submit']");
+  const saveStatus = document.getElementById("profileSaveStatus");
   const profile = {
     name: document.getElementById("nameInput").value.trim() || "Learner",
     level: document.getElementById("levelInput").value,
     difficulty: document.getElementById("difficultyInput").value,
     topic: document.getElementById("topicInput").value,
   };
+  saveButton.disabled = true;
+  saveButton.textContent = "Saving…";
+  saveStatus.hidden = true;
+  saveStatus.textContent = "";
+  saveStatus.setAttribute("role", "status");
+  saveStatus.setAttribute("aria-live", "polite");
   try {
     Object.assign(state, await learnerAPI.saveProfile(profile));
   } catch {
-    addMessage("assistant", "<p>I couldn’t save your learner profile. Please retry.</p>");
+    saveStatus.textContent = "Could not save your profile. Check your connection and try again.";
+    saveStatus.hidden = false;
+    saveStatus.setAttribute("role", "alert");
+    saveStatus.setAttribute("aria-live", "assertive");
     return;
+  } finally {
+    saveButton.disabled = false;
+    saveButton.textContent = "Save profile";
   }
   updateProfileUI();
   closeModal("profileModal");
