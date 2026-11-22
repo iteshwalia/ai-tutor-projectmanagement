@@ -24,7 +24,7 @@ The automated tests cover page and health endpoints, frontend module serving, de
 - Render built the Docker image and reported the service live for the release commit.
 - `GET /healthz` returned `{"status":"ok"}`.
 - The deployed homepage loaded in the browser.
-- After six chat exchanges, the chat container measured 597 px high with 1,481 px of message content. It was scrollable and had moved to the latest content, confirming the scroll fix.
+- After four sequential chat exchanges, waiting for each reply to finish, the chat container measured 240 px high with 1,166 px of message content. Its scroll position was 925.6 px of a 926 px maximum (0.4 px from the bottom), confirming it remained scrollable and followed the latest reply.
 
 ## Limitations and follow-up
 
