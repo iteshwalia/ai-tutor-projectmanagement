@@ -194,6 +194,14 @@ This log records the distinct requests, implementation decisions, checks, and de
 
 **Verification:** The combined API and browser suite passed all 26 tests; Ruff and whitespace checks passed. The UI tests ran in Chromium against the temporary local application.
 
+### 15. Export the reports as Word documents
+
+**Request:** Provide the full and regression test reports in an editable document format.
+
+**Work:** Generated [TEST_REPORT.docx](TEST_REPORT.docx) and [REGRESSION_TEST_REPORT.docx](REGRESSION_TEST_REPORT.docx) from the current Markdown reports, preserving headings, tables, lists, and report links. Added the Word versions to the README and report indexes.
+
+**Verification:** Both DOCX files reopened successfully and their key test results and coverage sections were verified.
+
 ## Current state and known limits
 
 - The live service reports Google Gemini when `GEMINI_API_KEY` is attached to the Render service through its environment configuration.
