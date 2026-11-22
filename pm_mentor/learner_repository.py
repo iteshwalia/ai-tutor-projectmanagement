@@ -7,7 +7,7 @@ from pathlib import Path
 
 from flask import current_app, g, session
 
-from backend.content import DEFAULT_LEARNER_NAME
+from pm_mentor.learning_content import DEFAULT_LEARNER_NAME
 
 LEGACY_DEFAULT_LEARNER_NAME = "Alex Morgan"
 

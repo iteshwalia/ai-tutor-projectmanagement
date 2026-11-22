@@ -139,6 +139,20 @@ This log records the distinct requests, implementation decisions, checks, and de
 
 **Commits:** `2cdece2` added the provider-precedence test; `45b6dbe` recorded the live Gemini check. No key value is included in source, reports, or this log.
 
+### 11. Clarify the application structure and architecture diagram
+
+**Request:** Restructure the application with more descriptive, developer-friendly file and folder names, and make the architecture diagram easier to understand.
+
+**Work:**
+
+- Renamed the generic `backend/` package to `pm_mentor/`.
+- Renamed `content.py` and `database.py` to `learning_content.py` and `learner_repository.py`.
+- Moved the Flask application factory to `pm_mentor/application.py`; kept the root `app.py` as a small local entry point and moved production startup to `pm_mentor/serve.py`.
+- Updated Docker, tests, imports, and current file maps to use the new package paths.
+- Reworked the architecture guide and SVG to explain the learner experience in plain language, while preserving the details of practice questions, progress storage, and optional Gemini integration.
+
+**Verification:** All 19 automated tests passed; Ruff, Python compilation, `git diff --check`, and SVG XML validation passed.
+
 ## Current state and known limits
 
 - The live service reports Google Gemini when `GEMINI_API_KEY` is attached to the Render service through its environment configuration.

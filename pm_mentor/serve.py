@@ -4,7 +4,7 @@ import os
 
 from waitress import serve
 
-from app import app
+from pm_mentor.application import create_app
 
 if __name__ == "__main__":
-    serve(app, host="0.0.0.0", port=int(os.getenv("PORT", "5000")))
+    serve(create_app(), host="0.0.0.0", port=int(os.getenv("PORT", "5000")))

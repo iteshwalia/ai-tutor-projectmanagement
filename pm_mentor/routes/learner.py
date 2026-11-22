@@ -5,8 +5,8 @@ import random
 from flask import Blueprint, jsonify
 from flask import request as flask_request
 
-from backend.content import LEVELS, QUESTION_BANK, TOPICS
-from backend.database import get_learner_state, save_learner_state
+from pm_mentor.learner_repository import get_learner_state, save_learner_state
+from pm_mentor.learning_content import LEVELS, QUESTION_BANK, TOPICS
 
 learner = Blueprint("learner", __name__, url_prefix="/api")
 

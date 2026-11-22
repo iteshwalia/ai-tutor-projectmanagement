@@ -42,11 +42,12 @@ python app.py
 | `templates/index.html` | Accessible tutor UI and profile/settings dialogs |
 | `static/styles.css` | Responsive visual design |
 | `static/js/` | ES modules separated into API client, chat, modes, profile, progress, state, and DOM helpers |
-| `app.py` | App factory, configuration, security headers, and blueprint registration |
-| `backend/routes/` | Separate page, health, learner, and tutor HTTP endpoints |
-| `backend/services/tutor.py` | AI provider selection, safe model calls, and demo response generation |
-| `backend/database.py` | SQLite connection lifecycle and learner-state persistence |
-| `backend/content.py` | Project-management topics, quiz content, and demo knowledge |
+| `app.py` | Local development entry point |
+| `pm_mentor/application.py` | App factory, configuration, security headers, and blueprint registration |
+| `pm_mentor/routes/` | Separate page, health, learner, and tutor HTTP endpoints |
+| `pm_mentor/services/tutor.py` | AI provider selection, safe model calls, and demo response generation |
+| `pm_mentor/learner_repository.py` | SQLite connection lifecycle and learner-state persistence |
+| `pm_mentor/learning_content.py` | Project-management topics, quiz content, and demo knowledge |
 | Flask session cookie | Contains only an opaque signed learner ID; protected with `HttpOnly`, `SameSite=Lax`, and `Secure` in production |
 | SQLite store | Stores learner profile, active question, and progress on the server in `instance/pm_mentor.sqlite3` |
 | AI provider | Optional model completion service contacted only by the backend |
@@ -59,12 +60,14 @@ python app.py
 - Standalone [architecture SVG](architecture.svg) for a browser or diagram-capable editor.
 
 ```text
-app.py                       Application factory and configuration
-backend/
-  content.py                 Topics, practice questions, demo knowledge
-  database.py                SQLite setup and learner-state repository
+app.py                       Local development entry point
+pm_mentor/
+  application.py             Flask app factory and configuration
+  learning_content.py        Topics, practice questions, demo knowledge
+  learner_repository.py      SQLite setup and learner-state repository
   routes/                    Page, health, learner, and tutor blueprints
   services/tutor.py          Demo and external model response service
+  serve.py                   Waitress production entry point
 static/js/
   app.js                     Frontend entry point and event wiring
   api.js                     Flask API client

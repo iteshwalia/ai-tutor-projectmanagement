@@ -9,7 +9,7 @@ The historical scroll-test evidence below is for the previous release. Follow-up
 
 ## Result
 
-**Pass.** Automated tests, lint, and Python compilation passed. The current source is deployed; a fresh browser check confirmed the Itesh profile and Gemini configuration. A live Gemini response was also verified.
+**Pass.** The deployed release was checked in Render and in a browser. The current local source also passes automated tests, lint, Python compilation, and architecture SVG validation; the package and diagram refactor has not yet been deployed.
 
 ## Automated checks
 
@@ -17,14 +17,16 @@ The historical scroll-test evidence below is for the previous release. Follow-up
 |---|---|
 | `.\.venv\Scripts\python.exe -m pytest` (release commit) | Passed: 14 tests |
 | `.\.venv\Scripts\python.exe -m ruff check .` | Passed: no lint issues |
-| `.\.venv\Scripts\python.exe -m compileall -q app.py backend tests` | Passed |
+| `.\.venv\Scripts\python.exe -m compileall -q app.py pm_mentor tests` | Passed |
 | GitHub Actions CI for the release commit | Passed: [workflow run 2](https://github.com/iteshwalia/ai-tutor-projectmanagement/actions/runs/45027726219) |
 
 The automated tests cover page and health endpoints, frontend module serving, demo chat responses, input validation, question generation and evaluation, progress updates and reset, profile validation and persistence, model-request forwarding with a mocked provider, HTTPS endpoint restrictions, secret-safe status output, production configuration, session-cookie contents, and security headers.
 
 ## Follow-up source validation
 
-The current source adds Gemini configuration, expands the question and demo-knowledge base, and changes the default learner name to Itesh. Local verification passed **19 tests**, Ruff, Python compilation, and `git diff --check`. Tests cover Gemini request defaults and secret-safe status, expanded CPMAI content, and migration of the legacy placeholder profile. Automated provider forwarding is mocked; a separate live check confirmed the configured Gemini provider.
+The source adds Gemini configuration, expands the question and demo-knowledge base, and changes the default learner name to Itesh. Local verification passed **19 tests**, Ruff, Python compilation, and `git diff --check`. Tests cover Gemini request defaults and secret-safe status, expanded CPMAI content, and migration of the legacy placeholder profile. Automated provider forwarding is mocked; a separate live check confirmed the configured Gemini provider.
+
+The later package and diagram refactor also passed all **19 tests**, Ruff, Python compilation, `git diff --check`, and SVG XML validation. This local refactor has not been deployed to Render.
 
 - Render manually deployed commit `6b41578` successfully and reports it Live.
 - A fresh page load showed the learner name as **Itesh** and the updated Gemini setup instructions.

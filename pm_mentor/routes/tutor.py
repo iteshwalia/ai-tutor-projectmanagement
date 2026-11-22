@@ -3,8 +3,8 @@
 from flask import Blueprint, current_app, jsonify
 from flask import request as flask_request
 
-from backend.database import get_learner_state
-from backend.services.tutor import (
+from pm_mentor.learner_repository import get_learner_state
+from pm_mentor.services.tutor import (
     generate_demo_response,
     generate_model_response,
     public_provider_status,

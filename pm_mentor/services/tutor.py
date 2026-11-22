@@ -126,6 +126,6 @@ def generate_demo_response(message, profile):
 
 
 def _fallback_knowledge():
-    from backend.content import FALLBACK_KNOWLEDGE
+    from pm_mentor.learning_content import FALLBACK_KNOWLEDGE
 
     return FALLBACK_KNOWLEDGE

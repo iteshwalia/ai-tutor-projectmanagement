@@ -29,7 +29,7 @@ class TutorApplicationTests(unittest.TestCase):
 
     def get_pert_question(self):
         with patch(
-            "backend.routes.learner.random.choice",
+            "pm_mentor.routes.learner.random.choice",
             side_effect=lambda choices: next(
                 item for item in choices if item["answer"] == "6 days"
             ),
@@ -205,7 +205,9 @@ class TutorApplicationTests(unittest.TestCase):
         ).encode()
         with (
             patch.dict(os.environ, {"OPENAI_API_KEY": "test-token"}, clear=True),
-            patch("backend.services.tutor.request.urlopen", return_value=mock_response) as urlopen,
+            patch(
+                "pm_mentor.services.tutor.request.urlopen", return_value=mock_response
+            ) as urlopen,
         ):
             response = self.client.post("/api/chat", json={"message": "Explain the critical path"})
 
@@ -226,7 +228,9 @@ class TutorApplicationTests(unittest.TestCase):
         ).encode()
         with (
             patch.dict(os.environ, {"GEMINI_API_KEY": "test-gemini-token"}, clear=True),
-            patch("backend.services.tutor.request.urlopen", return_value=mock_response) as urlopen,
+            patch(
+                "pm_mentor.services.tutor.request.urlopen", return_value=mock_response
+            ) as urlopen,
         ):
             response = self.client.post("/api/chat", json={"message": "Explain project scope"})
 
@@ -250,7 +254,7 @@ class TutorApplicationTests(unittest.TestCase):
                 },
                 clear=True,
             ),
-            patch("backend.services.tutor.request.urlopen") as urlopen,
+            patch("pm_mentor.services.tutor.request.urlopen") as urlopen,
         ):
             response = self.client.post("/api/chat", json={"message": "Explain the critical path"})
         self.assertEqual(response.status_code, 503)
