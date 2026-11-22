@@ -176,7 +176,8 @@ Review `git status` before committing. `.gitignore` excludes local environments,
 ## Project documentation
 
 - [Development story, prompts, iterations, and test history](DEVELOPMENT.md)
-- [Concise development log (Word)](DEVELOPMENT_LOG.docx)
+- [Detailed development log with prompt examples (Word)](DEVELOPMENT_LOG_DETAILED.docx)
+- [Earlier concise development log (Word)](DEVELOPMENT_LOG.docx)
 - [User experience and development process report](USER_EXPERIENCE_REPORT.md)
 - [User experience report (PDF)](USER_EXPERIENCE_REPORT.pdf)
 - [User experience report (Word)](USER_EXPERIENCE_REPORT.docx)

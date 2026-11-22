@@ -2,7 +2,18 @@
 
 This log records the distinct requests, implementation decisions, checks, and deployment follow-ups made while building PM Mentor. Repeated requests are grouped into the step they affected. Prompt descriptions are summarized from the project brief and follow-up instructions; they are not a verbatim transcript. No API credentials are recorded here.
 
-A concise, reader-friendly Word edition is available in [DEVELOPMENT_LOG.docx](DEVELOPMENT_LOG.docx).
+A detailed, reader-friendly Word edition that preserves this timeline and includes representative prompt examples is available in [DEVELOPMENT_LOG_DETAILED.docx](DEVELOPMENT_LOG_DETAILED.docx). The earlier concise edition remains in [DEVELOPMENT_LOG.docx](DEVELOPMENT_LOG.docx).
+
+## Representative prompts used during development
+
+These are prompt examples documented in DEVELOPMENT.md. They capture the direction of the work; they are not a verbatim transcript of every user message.
+
+- **Product and interface:** “Build a project-management tutor for working professionals, with a polished chat interface, topic navigation, learner profile, and clear study actions.”
+- **Personalization:** “Let the learner enter a name, current level, focus topic, and preferred difficulty, and use that information in the welcome message and learning experience.”
+- **Teaching style:** “Explain concepts simply, use workplace examples, give hints before answers, encourage retrying, adapt difficulty, and redirect unrelated questions to project management.”
+- **Practice and assessment:** “Generate project-management questions dynamically. Ask a question, accept the learner's answer, mark it correct or incorrect, explain the result, and provide encouragement.”
+- **Progress:** “Track attempts, correct answers, strong areas, weak areas, and the most useful next lesson.”
+- **Technical delivery:** “Turn the interface into a proper Python application, add a Flask backend, use server-side API credentials, and provide deployment instructions.”
 
 ## Development timeline
 
