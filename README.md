@@ -9,7 +9,7 @@ PM Mentor is a focused project-management tutor for working professionals. It co
 - Project-management examples and answer feedback
 - Session progress, strengths, weaknesses, and next-lesson suggestions
 - Demo responses without an AI credential
-- Optional OpenAI-compatible or GitHub Models integration
+- Optional Google Gemini free-tier or other OpenAI-compatible model integration
 - Docker deployment and GitHub Actions checks
 
 ## Development setup
@@ -73,14 +73,16 @@ Important endpoints: `GET /healthz`, `GET /api/status`, `POST /api/chat`, `GET/P
 
 ## Model responses and API credentials
 
-The backend checks `OPENAI_API_KEY` first. If it is absent, it checks `GITHUB_TOKEN`. These credentials are never sent to or stored in the browser.
+The backend supports Google Gemini and OpenAI-compatible chat-completions APIs. It prefers `GEMINI_API_KEY` when both provider keys are set. Keys are read only by the backend and are never sent to or stored in the browser.
 
 | Environment variable | Purpose |
 |---|---|
-| `OPENAI_API_KEY` | Bearer key for the OpenAI API or a compatible service |
-| `GITHUB_TOKEN` | Bearer token for GitHub Models if `OPENAI_API_KEY` is not set |
-| `OPENAI_API_URL` | Optional chat-completions endpoint override |
-| `OPENAI_MODEL` | Optional model ID; defaults to `gpt-4o-mini` for OpenAI and `openai/gpt-4.1-mini` for GitHub Models |
+| `GEMINI_API_KEY` | Google AI Studio key; uses the OpenAI-compatible Gemini endpoint |
+| `GEMINI_MODEL` | Optional Gemini model; defaults to `gemini-3.5-flash-lite` |
+| `GEMINI_API_URL` | Optional Gemini chat-completions endpoint override |
+| `OPENAI_API_KEY` | Key for OpenAI or another OpenAI-compatible service |
+| `OPENAI_API_URL` | Optional endpoint override for the OpenAI-compatible provider |
+| `OPENAI_MODEL` | Optional model ID; defaults to `gpt-4o-mini` |
 | `FLASK_SECRET_KEY` | Required signing key for production Flask sessions |
 | `FLASK_ENV` | Set to `production` to enable secure-cookie production behavior |
 
@@ -88,7 +90,7 @@ Without a model key, `/api/chat` replies from built-in demo knowledge; it does n
 
 Non-local model endpoints must use HTTPS. HTTP is allowed only for loopback development endpoints.
 
-For local development, copy `.env.example` to `.env` and set your chosen provider key. `python-dotenv` loads it automatically, and `.env` is ignored by Git. Never paste a real token into source code, screenshots, or issue reports. GitHub Models access and available model identifiers depend on your account and the selected endpoint.
+To enable Gemini, create a key in [Google AI Studio](https://aistudio.google.com/api-keys), then set `GEMINI_API_KEY` in the server environment. Gemini's free tier has usage limits, and Google may use free-tier prompts to improve its products. Do not submit confidential, sensitive, or personally identifying information; check Google's current [Gemini API terms](https://ai.google.dev/gemini-api/terms) before use. For local development, copy `.env.example` to `.env`; `python-dotenv` loads it automatically, and `.env` is ignored by Git. Never paste a real key into source code, screenshots, or issue reports.
 
 ## Production deployment
 
@@ -102,7 +104,7 @@ The included [render.yaml](render.yaml) Blueprint configures a Free web service,
 2. Sign in at [Render](https://render.com), select **New → Blueprint**, and connect the GitHub repository.
 3. Review the `pm-mentor` Free service details, then apply the Blueprint.
 4. Wait for the deploy and health check to pass. Render assigns a public `https://...onrender.com` address; open it while your laptop is off to confirm it is hosted independently. The first request after idle may take time while the service wakes.
-5. To enable model-generated replies, add `OPENAI_API_KEY` or `GITHUB_TOKEN` under the service's **Environment** settings. Optionally add `OPENAI_MODEL` and `OPENAI_API_URL`, then redeploy.
+5. To enable model-generated replies, add `GEMINI_API_KEY` under the service's **Environment** settings. Alternatively, add `OPENAI_API_KEY` for an OpenAI-compatible provider. Set the corresponding model or endpoint variables only if you need to override the defaults, then redeploy.
 
 The service works without a model key using demo responses. Do not put credentials in the Blueprint or commit them to Git; set them in Render's secret environment-variable settings.
 
@@ -112,7 +114,7 @@ The service works without a model key using demo responses. Do not put credentia
    py -c "import secrets; print(secrets.token_hex(32))"
    ```
 
-2. Set `FLASK_SECRET_KEY`, `OPENAI_API_KEY` or `GITHUB_TOKEN`, and any model options in your hosting provider's secret manager.
+2. Set `FLASK_SECRET_KEY`, `GEMINI_API_KEY` (or `OPENAI_API_KEY`), and any model options in your hosting provider's secret manager.
 3. Build and run the image behind a TLS-terminating reverse proxy:
 
    ```powershell
@@ -120,7 +122,7 @@ The service works without a model key using demo responses. Do not put credentia
    docker run --rm -p 5000:5000 `
      -v pm-mentor-data:/app/instance `
      -e FLASK_SECRET_KEY=$env:FLASK_SECRET_KEY `
-     -e OPENAI_API_KEY=$env:OPENAI_API_KEY `
+     -e GEMINI_API_KEY=$env:GEMINI_API_KEY `
      pm-mentor
    ```
 

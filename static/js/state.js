@@ -1,5 +1,5 @@
 export const state = {
-  name: "Alex Morgan",
+  name: "Itesh",
   level: "Intermediate",
   difficulty: "Intermediate",
   topic: "Project Planning & Scheduling",

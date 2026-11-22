@@ -1,7 +1,9 @@
 import json
 import os
+import sqlite3
 import tempfile
 import unittest
+from contextlib import closing
 from http.cookies import SimpleCookie
 from unittest.mock import MagicMock, patch
 
@@ -24,6 +26,15 @@ class TutorApplicationTests(unittest.TestCase):
 
     def tearDown(self):
         self.temp_dir.cleanup()
+
+    def get_pert_question(self):
+        with patch(
+            "backend.routes.learner.random.choice",
+            side_effect=lambda choices: next(
+                item for item in choices if item["answer"] == "6 days"
+            ),
+        ):
+            return self.client.get("/api/question")
 
     def test_home_and_health_endpoints(self):
         home = self.client.get("/")
@@ -52,7 +63,7 @@ class TutorApplicationTests(unittest.TestCase):
         )
 
     def test_question_and_answer_update_progress(self):
-        question = self.client.get("/api/question")
+        question = self.get_pert_question()
         self.assertEqual(question.status_code, 200)
         self.assertNotIn("answer", question.json)
         self.assertNotIn("accepted", question.json)
@@ -63,7 +74,7 @@ class TutorApplicationTests(unittest.TestCase):
         self.assertEqual(answer.json["progress"]["correct"], 1)
 
     def test_answer_matching_does_not_accept_substrings(self):
-        self.client.get("/api/question")
+        self.get_pert_question()
         answer = self.client.post("/api/evaluate", json={"answer": "not 6"})
         self.assertEqual(answer.status_code, 200)
         self.assertFalse(answer.json["correct"])
@@ -91,6 +102,66 @@ class TutorApplicationTests(unittest.TestCase):
         persisted_profile = self.client.get("/api/profile")
         self.assertEqual(persisted_profile.json["name"], "Sam")
 
+    def test_default_profile_uses_itesh_and_migrates_legacy_placeholder(self):
+        self.assertEqual(self.client.get("/api/profile").json["name"], "Itesh")
+        with self.client.session_transaction() as browser_session:
+            browser_session["learner_id"] = "legacy-profile"
+        with closing(sqlite3.connect(self.app.config["DATABASE"])) as connection:
+            connection.execute(
+                """
+                INSERT INTO learner_sessions (
+                    session_id, profile_json, progress_json, active_question_json
+                ) VALUES (?, ?, ?, NULL)
+                """,
+                (
+                    "legacy-profile",
+                    json.dumps(
+                        {
+                            "name": "Alex Morgan",
+                            "level": "Intermediate",
+                            "difficulty": "Intermediate",
+                            "topic": "Project Planning & Scheduling",
+                        }
+                    ),
+                    json.dumps({"attempted": 0, "correct": 0, "areas": {}}),
+                ),
+            )
+            connection.commit()
+        response = self.client.get("/api/profile")
+        self.assertEqual(response.json["name"], "Itesh")
+        with closing(sqlite3.connect(self.app.config["DATABASE"])) as connection:
+            migrated_profile = json.loads(
+                connection.execute(
+                    "SELECT profile_json FROM learner_sessions WHERE session_id = ?",
+                    ("legacy-profile",),
+                ).fetchone()[0]
+            )
+        self.assertEqual(migrated_profile["name"], "Itesh")
+
+    def test_expanded_cpmai_question_accepts_natural_answer(self):
+        self.client.post(
+            "/api/profile",
+            json={"topic": "CPMAI - AI Project Management"},
+        )
+        question = self.client.get("/api/question")
+        self.assertEqual(question.json["topic"], "CPMAI - AI Project Management")
+        self.assertIn("data readiness", question.json["question"].lower())
+        answer = self.client.post(
+            "/api/evaluate",
+            json={
+                "answer": (
+                    "To verify that suitable, sufficient, and usable data is available"
+                )
+            },
+        )
+        self.assertTrue(answer.json["correct"])
+
+    def test_demo_knowledge_includes_data_readiness(self):
+        with patch.dict(os.environ, {}, clear=True):
+            response = self.client.post("/api/chat", json={"message": "What is data readiness?"})
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("available, relevant", response.json["reply"])
+
     def test_reset_clears_session_progress(self):
         self.client.get("/api/question")
         self.client.post("/api/evaluate", json={"answer": "6"})
@@ -110,6 +181,13 @@ class TutorApplicationTests(unittest.TestCase):
         self.assertEqual(response.json["provider"], "OpenAI-compatible")
         self.assertEqual(response.json["model"], "test-model")
         self.assertNotIn("test-secret-token", json.dumps(response.json))
+
+    def test_status_reports_gemini_provider_without_secret(self):
+        with patch.dict(os.environ, {"GEMINI_API_KEY": "test-gemini-secret"}, clear=True):
+            response = self.client.get("/api/status")
+        self.assertEqual(response.json["provider"], "Google Gemini")
+        self.assertEqual(response.json["model"], "gemini-3.5-flash-lite")
+        self.assertNotIn("test-gemini-secret", json.dumps(response.json))
 
     def test_chat_forwards_message_to_configured_model(self):
         mock_response = MagicMock()
@@ -131,6 +209,27 @@ class TutorApplicationTests(unittest.TestCase):
             json.loads(forwarded_request.data)["messages"][-1]["content"],
             "Explain the critical path",
         )
+
+    def test_chat_uses_gemini_defaults_without_sending_learner_name(self):
+        mock_response = MagicMock()
+        mock_response.__enter__.return_value.read.return_value = json.dumps(
+            {"choices": [{"message": {"content": "Gemini tutor reply."}}]}
+        ).encode()
+        with (
+            patch.dict(os.environ, {"GEMINI_API_KEY": "test-gemini-token"}, clear=True),
+            patch("backend.services.tutor.request.urlopen", return_value=mock_response) as urlopen,
+        ):
+            response = self.client.post("/api/chat", json={"message": "Explain project scope"})
+
+        self.assertEqual(response.status_code, 200)
+        forwarded_request = urlopen.call_args.args[0]
+        payload = json.loads(forwarded_request.data)
+        self.assertEqual(
+            forwarded_request.full_url,
+            "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
+        )
+        self.assertEqual(payload["model"], "gemini-3.5-flash-lite")
+        self.assertNotIn("Itesh", payload["messages"][0]["content"])
 
     def test_chat_rejects_non_https_provider_urls(self):
         with (

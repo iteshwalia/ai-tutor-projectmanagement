@@ -7,6 +7,10 @@ from pathlib import Path
 
 from flask import current_app, g, session
 
+from backend.content import DEFAULT_LEARNER_NAME
+
+LEGACY_DEFAULT_LEARNER_NAME = "Alex Morgan"
+
 
 def init_database(app):
     database_path = app.config["DATABASE"]
@@ -65,7 +69,7 @@ def get_learner_state():
     if row is None:
         state = {
             "profile": {
-                "name": "Alex Morgan",
+                "name": DEFAULT_LEARNER_NAME,
                 "level": "Intermediate",
                 "difficulty": "Intermediate",
                 "topic": "Project Planning & Scheduling",
@@ -75,13 +79,17 @@ def get_learner_state():
         }
         save_learner_state(state)
         return state
-    return {
+    state = {
         "profile": json.loads(row["profile_json"]),
         "progress": json.loads(row["progress_json"]),
         "active_question": (
             json.loads(row["active_question_json"]) if row["active_question_json"] else None
         ),
     }
+    if state["profile"].get("name") == LEGACY_DEFAULT_LEARNER_NAME:
+        state["profile"]["name"] = DEFAULT_LEARNER_NAME
+        save_learner_state(state)
+    return state
 
 
 def save_learner_state(state):

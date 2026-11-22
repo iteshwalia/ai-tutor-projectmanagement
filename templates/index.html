@@ -57,7 +57,7 @@
         <div class="profile-person">
           <div class="avatar" id="avatarInitial">A</div>
           <div>
-            <strong id="profileName">Alex Morgan</strong>
+            <strong id="profileName">Itesh</strong>
             <small id="profileLevel">Intermediate learner</small>
           </div>
         </div>
@@ -100,7 +100,7 @@
                 <svg viewBox="0 0 24 24"><path d="M12 3 4.5 6.5v5c0 4.7 3.2 7.7 7.5 9.5 4.3-1.8 7.5-4.8 7.5-9.5v-5L12 3Z"/><path d="M9 12l2 2 4-4"/></svg>
               </div>
               <div class="welcome-copy">
-                <h1>Welcome back, <span id="welcomeName">Alex</span></h1>
+                <h1>Welcome back, <span id="welcomeName">Itesh</span></h1>
                 <p>Ready to strengthen your project management skills?</p>
               </div>
             </div>
@@ -165,7 +165,7 @@
         <button class="modal-close" data-close="profileModal" aria-label="Close">&times;</button>
       </div>
       <form id="profileForm">
-        <label>Name<input type="text" id="nameInput" value="Alex Morgan" required></label>
+        <label>Name<input type="text" id="nameInput" value="Itesh" required></label>
         <div class="form-row">
           <label>Current level
             <select id="levelInput">
@@ -238,9 +238,9 @@
       <div class="settings-content">
         <p><strong>Frontend:</strong> the browser sends chat and profile actions to Flask.</p>
         <p><strong>Backend:</strong> Flask stores session progress, evaluates answers, and calls the model provider.</p>
-        <p><strong>AI key:</strong> configure <strong>OPENAI_API_KEY</strong> for OpenAI-compatible models or <strong>GITHUB_TOKEN</strong> for GitHub Models.</p>
-        <p><strong>Model settings:</strong> use <strong>OPENAI_API_URL</strong> to select the endpoint and <strong>OPENAI_MODEL</strong> to select the model.</p>
-        <p>Without a key, the tutor uses built-in demo knowledge. No key is collected or stored in the browser.</p>
+        <p><strong>AI key:</strong> set <strong>GEMINI_API_KEY</strong> for Google Gemini or <strong>OPENAI_API_KEY</strong> for another OpenAI-compatible provider. Keys are read only by the backend.</p>
+        <p><strong>Model settings:</strong> use <strong>GEMINI_MODEL</strong> or <strong>OPENAI_MODEL</strong> to select a model. Gemini's endpoint can be overridden with <strong>GEMINI_API_URL</strong>.</p>
+        <p>Gemini's free tier may use prompts to improve Google products; do not send sensitive or confidential information. Without a key, the tutor uses built-in demo knowledge.</p>
         <button class="primary-button" id="saveSettings">Got it</button>
       </div>
     </div>

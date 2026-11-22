@@ -107,15 +107,13 @@ The HTML, JavaScript, and CSS remained the user-facing application, while Flask 
 
 ### Iteration 6: Securing AI integration
 
-The original browser-side settings modal was changed so it no longer collected API keys. Instead, the application now recommends server environment variables:
+The original browser-side settings modal was changed so it no longer collected API keys. The first server-side provider configuration used:
 
 - `OPENAI_API_KEY`
 - `OPENAI_API_URL`
 - `OPENAI_MODEL`
 
-This was an important improvement because credentials should not be embedded in browser code or shared with other users.
-
-When no provider is configured, the app continues to work using a built-in demo knowledge layer.
+This was an important improvement because credentials should not be embedded in browser code or shared with other users. When no provider was configured, the app continued to work using a built-in demo knowledge layer. The later Gemini addition is documented in Iteration 10.
 
 ### Iteration 7: Deployment and documentation
 
@@ -156,6 +154,14 @@ The final refactor replaced the single browser script and crowded Flask module w
 - `backend/content.py` holds quiz and demo learning content.
 
 This makes it easier to find a feature, test it in isolation, and add new behavior without growing a single application file indefinitely.
+
+### Iteration 10: Expanding practice content and enabling a free-tier model option
+
+We broadened the built-in practice bank with original PMP-style items covering WBS, critical-path delays, cost performance, stakeholder engagement, Scrum events, risk responses, servant leadership, and AI data readiness. The demo tutor also gained concise explanations for these concepts, so the app remains useful without a model credential.
+
+The previous GitHub Models instructions were replaced with a first-class Google Gemini option. The backend now uses `GEMINI_API_KEY` and the Gemini OpenAI-compatible endpoint by default, while preserving support for other OpenAI-compatible providers. The settings and setup docs warn that Gemini free-tier use is limited and prompts may be used to improve Google's products. The learner's name is no longer included in the model system prompt.
+
+The default learner is now Itesh. Existing records that still contain the original seeded placeholder name are updated when that learner profile is next loaded; learner-chosen names are unchanged.
 
 ## 4. Testing performed
 
@@ -203,7 +209,7 @@ The automated suite (`py -m pytest -q`) covers:
 
 The original prototype was also smoke-tested through the browser-facing home page and chat, question, progress, and evaluation endpoints. Automated browser interaction and a live external model call remain manual release checks because they require a browser session and a valid provider credential.
 
-The current release-candidate checks completed with **14 passing tests**, clean Ruff checks, and successful Python compilation. A Waitress production-mode smoke test returned HTTP 200 from `/healthz` and verified secure session-cookie and HSTS headers. Docker image building was not performed because Docker is not installed in the environment.
+The earlier release-candidate checks completed with **14 passing tests**, clean Ruff checks, and successful Python compilation. The follow-up source changes passed **19 tests**, Ruff, Python compilation, and `git diff --check`; the new Gemini request path is tested with a mocked provider response, not a live key. A Waitress production-mode smoke test returned HTTP 200 from `/healthz` and verified secure session-cookie and HSTS headers. Docker image building was not performed because Docker is not installed in the environment.
 
 ## 5. System prompt used for the AI tutor
 

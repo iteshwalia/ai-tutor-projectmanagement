@@ -12,7 +12,7 @@ flowchart LR
     Logic["Learner Routes + SQLite Repository"]
     Demo["Built-in Demo Knowledge"]
     Service["Tutor Provider Service"]
-    AI["Model API: OpenAI-Compatible or GitHub Models"]
+    AI["Model API: Google Gemini or OpenAI-Compatible"]
     Host["Render HTTPS Web Service"]
     Disk["Persistent SQLite Disk"]
 
@@ -41,4 +41,4 @@ flowchart LR
 - **SQLite store:** Keeps learner profile, active question, and progress on the server; model credentials are never stored in learner records.
 - **Tutor Logic:** Generates questions, evaluates answers, and summarizes strengths and weaknesses.
 - **Demo Knowledge:** Provides useful responses when no external AI credential is configured.
-- **AI Provider:** Optional OpenAI-compatible chat completion service configured only on the server.
+- **AI Provider:** Optional Gemini or OpenAI-compatible chat completion service configured only on the server.

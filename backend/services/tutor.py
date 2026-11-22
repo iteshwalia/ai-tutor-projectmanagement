@@ -12,22 +12,30 @@ logger = logging.getLogger(services_package)
 
 
 def get_provider_config():
+    gemini_key = os.getenv("GEMINI_API_KEY")
     openai_key = os.getenv("OPENAI_API_KEY")
-    github_token = os.getenv("GITHUB_TOKEN")
-    if openai_key:
+    if gemini_key:
+        key, key_name = gemini_key, "GEMINI_API_KEY"
+        default_model = "gemini-3.5-flash-lite"
+        default_url = (
+            "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
+        )
+        model = os.getenv("GEMINI_MODEL", default_model)
+        url = os.getenv("GEMINI_API_URL", default_url)
+        provider = "Google Gemini"
+    elif openai_key:
         key, key_name = openai_key, "OPENAI_API_KEY"
         default_model = "gpt-4o-mini"
         default_url = "https://api.openai.com/v1/chat/completions"
-    elif github_token:
-        key, key_name = github_token, "GITHUB_TOKEN"
-        default_model = "openai/gpt-4.1-mini"
-        default_url = "https://models.github.ai/inference/chat/completions"
+        model = os.getenv("OPENAI_MODEL", default_model)
+        url = os.getenv("OPENAI_API_URL", default_url)
+        provider = "OpenAI-compatible"
     else:
         return {
             "configured": False,
             "key": None,
             "key_name": "None",
-            "model": os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+            "model": "None",
             "url": "",
             "provider": "Demo knowledge",
         }
@@ -36,9 +44,9 @@ def get_provider_config():
         "configured": True,
         "key": key,
         "key_name": key_name,
-        "model": os.getenv("OPENAI_MODEL", default_model),
-        "url": os.getenv("OPENAI_API_URL", default_url),
-        "provider": "OpenAI-compatible" if key_name == "OPENAI_API_KEY" else "GitHub Models",
+        "model": model,
+        "url": url,
+        "provider": provider,
     }
 
 
@@ -66,7 +74,7 @@ def generate_model_response(message, profile, app_is_production):
 
     system_prompt = (
         f"You are PM Mentor, a {profile['difficulty']} tutor for working professionals. "
-        f"The learner is {profile['name']} and is studying {profile['topic']}. "
+        f"The learner is studying {profile['topic']}. "
         "Explain simply with workplace examples, give hints before answers, encourage retrying, "
         "evaluate answers constructively, and redirect unrelated questions to project management."
     )

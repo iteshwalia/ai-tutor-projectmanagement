@@ -9,6 +9,7 @@ TOPICS = {
     "CPMAI - AI Project Management",
 }
 LEVELS = {"Beginner", "Intermediate", "Advanced"}
+DEFAULT_LEARNER_NAME = "Itesh"
 
 QUESTION_BANK = [
     {
@@ -65,9 +66,320 @@ QUESTION_BANK = [
             "risk event occurs."
         ),
     },
+    {
+        "topic": "Project Planning & Scheduling",
+        "question": (
+            "Which planning artifact decomposes the total project scope into manageable "
+            "deliverables and work packages?"
+        ),
+        "answer": "Work Breakdown Structure (WBS)",
+        "accepted": ["work breakdown structure", "wbs"],
+        "choices": [
+            "Stakeholder register",
+            "Work Breakdown Structure (WBS)",
+            "Risk report",
+            "Issue log",
+        ],
+        "hint": "Look for the hierarchical breakdown of all approved project work.",
+        "explanation": (
+            "The WBS organizes the approved scope into deliverables and smaller work packages "
+            "that can be estimated and managed."
+        ),
+    },
+    {
+        "topic": "Project Planning & Scheduling",
+        "question": (
+            "A critical-path activity slips by two days and no recovery action is taken. "
+            "What is the direct effect on the schedule?"
+        ),
+        "answer": "The project completion date is delayed by two days",
+        "accepted": [
+            "the project completion date is delayed by two days",
+            "the finish date is delayed by two days",
+            "project completion is delayed by two days",
+        ],
+        "choices": [
+            "The project completion date is delayed by two days",
+            "The project budget is reduced",
+            "The activity gains two days of float",
+            "The scope is automatically reduced",
+        ],
+        "hint": "Critical-path activities have no total float to absorb a delay.",
+        "explanation": (
+            "With zero float and no schedule recovery, a two-day delay to a critical-path "
+            "activity moves the project's finish date by two days."
+        ),
+    },
+    {
+        "topic": "Project Planning & Scheduling",
+        "question": "A project's Cost Performance Index (CPI) is 0.80. What does this indicate?",
+        "answer": "The project is over budget",
+        "accepted": ["the project is over budget", "over budget", "cost overrun"],
+        "choices": [
+            "The project is under budget",
+            "The project is over budget",
+            "The project is ahead of schedule",
+            "The project has no cost variance",
+        ],
+        "hint": "CPI compares earned value with actual cost; a value below 1.0 is unfavorable.",
+        "explanation": (
+            "A CPI of 0.80 means the project is earning 80 cents of value for each dollar "
+            "spent, which indicates cost inefficiency and an over-budget trend."
+        ),
+    },
+    {
+        "topic": "Stakeholder Management",
+        "question": (
+            "A stakeholder has low power but high interest in the project. "
+            "What engagement approach is usually appropriate?"
+        ),
+        "answer": "Keep informed",
+        "accepted": ["keep informed", "inform", "keep them informed"],
+        "choices": ["Monitor", "Keep informed", "Keep satisfied", "Manage closely"],
+        "hint": "Use both power and interest to identify the stakeholder's quadrant.",
+        "explanation": (
+            "Stakeholders with high interest and lower power should generally receive timely "
+            "information and opportunities to provide input."
+        ),
+    },
+    {
+        "topic": "Stakeholder Management",
+        "question": (
+            "Which tool compares stakeholders' current and desired engagement levels "
+            "to identify communication or involvement gaps?"
+        ),
+        "answer": "Stakeholder engagement assessment matrix",
+        "accepted": [
+            "stakeholder engagement assessment matrix",
+            "engagement assessment matrix",
+        ],
+        "choices": [
+            "Responsibility assignment matrix",
+            "Stakeholder engagement assessment matrix",
+            "Probability and impact matrix",
+            "Schedule network diagram",
+        ],
+        "hint": "It records current and desired engagement for each stakeholder.",
+        "explanation": (
+            "The stakeholder engagement assessment matrix helps the team compare current "
+            "engagement with the desired state and plan actions to close gaps."
+        ),
+    },
+    {
+        "topic": "Agile Methodologies",
+        "question": (
+            "In Scrum, which event lets stakeholders inspect the increment and provide "
+            "feedback on the product?"
+        ),
+        "answer": "Sprint Review",
+        "accepted": ["sprint review", "the sprint review"],
+        "choices": ["Sprint Planning", "Daily Scrum", "Sprint Review", "Sprint Retrospective"],
+        "hint": "This event happens near the end of a sprint and focuses on the product.",
+        "explanation": (
+            "The Sprint Review is an opportunity to inspect the increment, discuss progress "
+            "toward the product goal, and adapt future work based on feedback."
+        ),
+    },
+    {
+        "topic": "Agile Methodologies",
+        "question": (
+            "What is the main purpose of the Daily Scrum for the developers?"
+        ),
+        "answer": "Inspect progress toward the Sprint Goal and adapt the plan",
+        "accepted": [
+            "inspect progress toward the sprint goal and adapt the plan",
+            "inspect progress and adapt the plan",
+            "adapt the plan toward the sprint goal",
+        ],
+        "choices": [
+            "Report individual hours to the project manager",
+            "Inspect progress toward the Sprint Goal and adapt the plan",
+            "Approve the product release",
+            "Re-estimate the entire product backlog",
+        ],
+        "hint": "It is a short planning event for the people doing the work.",
+        "explanation": (
+            "Developers use the Daily Scrum to inspect progress toward the Sprint Goal and "
+            "adjust their plan for the next day."
+        ),
+    },
+    {
+        "topic": "Risk Management",
+        "question": (
+            "Which document records identified risks, their owners, analysis, and planned "
+            "responses?"
+        ),
+        "answer": "Risk register",
+        "accepted": ["risk register", "the risk register"],
+        "choices": ["Issue log", "Risk register", "Assumption log", "Change log"],
+        "hint": "This is the central record maintained during risk management.",
+        "explanation": (
+            "The risk register records individual risks and supporting details such as "
+            "owners, analysis, triggers, and response plans."
+        ),
+    },
+    {
+        "topic": "Risk Management",
+        "question": (
+            "A team adds a prototype test to reduce the chance that a technical risk will "
+            "occur. Which threat response strategy is this?"
+        ),
+        "answer": "Mitigate",
+        "accepted": ["mitigate", "mitigation", "risk mitigation"],
+        "choices": ["Avoid", "Mitigate", "Transfer", "Accept"],
+        "hint": "The response reduces the probability or impact rather than eliminating all risk.",
+        "explanation": (
+            "Mitigation takes action to reduce a threat's probability or impact to an "
+            "acceptable level."
+        ),
+    },
+    {
+        "topic": "Risk Management",
+        "question": (
+            "A project purchases insurance so a third party bears the financial impact "
+            "of a particular threat. Which response strategy is this?"
+        ),
+        "answer": "Transfer",
+        "accepted": ["transfer", "risk transfer", "transferring the risk"],
+        "choices": ["Avoid", "Mitigate", "Transfer", "Accept"],
+        "hint": "The response shifts ownership of the financial impact to another party.",
+        "explanation": (
+            "Risk transfer allocates responsibility for the threat's impact to a third party, "
+            "often through insurance or contractual terms."
+        ),
+    },
+    {
+        "topic": "Leadership & Team Performance",
+        "question": (
+            "A servant leader notices the team is blocked by a dependency and works to "
+            "remove it. What leadership behavior is being demonstrated?"
+        ),
+        "answer": "Removing impediments",
+        "accepted": [
+            "removing impediments",
+            "remove impediments",
+            "clearing blockers",
+            "remove blockers",
+        ],
+        "choices": [
+            "Centralizing every decision",
+            "Removing impediments",
+            "Increasing work in progress",
+            "Avoiding team feedback",
+        ],
+        "hint": "The leader helps the team make progress rather than directing every task.",
+        "explanation": (
+            "Servant leaders support the team's effectiveness by helping resolve blockers "
+            "and enabling people to do their work."
+        ),
+    },
+    {
+        "topic": "CPMAI - AI Project Management",
+        "question": (
+            "Before building an AI model, why should a project team assess data readiness?"
+        ),
+        "answer": "To verify that suitable, sufficient, and usable data is available",
+        "accepted": [
+            "to verify that suitable, sufficient, and usable data is available",
+            "to verify that suitable sufficient and usable data is available",
+            "to assess data quality availability and suitability",
+            "check data quality and availability",
+        ],
+        "choices": [
+            "To select a project logo",
+            "To verify that suitable, sufficient, and usable data is available",
+            "To skip stakeholder validation",
+            "To guarantee a model will never make errors",
+        ],
+        "hint": "AI project outcomes depend on the relevance and quality of the data.",
+        "explanation": (
+            "Data readiness checks whether relevant data exists, is accessible, and is "
+            "sufficiently usable and representative for the intended AI outcome."
+        ),
+    },
 ]
 
 FALLBACK_KNOWLEDGE = {
+    "work breakdown structure": (
+        "A Work Breakdown Structure (WBS) organizes the approved project scope into "
+        "deliverables and manageable work packages."
+    ),
+    "wbs": (
+        "A WBS is a hierarchical breakdown of the approved project scope into deliverables "
+        "and work packages that can be estimated and managed."
+    ),
+    "scope creep": (
+        "Scope creep is the gradual growth of project work without the required review, "
+        "approval, and adjustment of time, cost, or resources."
+    ),
+    "project charter": (
+        "A project charter formally authorizes a project and gives the project manager "
+        "authority to use organizational resources."
+    ),
+    "change control": (
+        "Change control evaluates a requested change, its impact, and the required approval "
+        "before updating project baselines or plans."
+    ),
+    "cost performance index": (
+        "The Cost Performance Index (CPI) is earned value divided by actual cost. "
+        "A value below 1.0 signals that cost efficiency is worse than planned."
+    ),
+    "cpi": (
+        "CPI is earned value divided by actual cost. A CPI below 1.0 means the project "
+        "is earning less value per dollar than planned."
+    ),
+    "earned value": (
+        "Earned value management compares planned value, earned value, and actual cost "
+        "to assess schedule and cost performance."
+    ),
+    "power-interest": (
+        "A power-interest grid groups stakeholders by influence and interest to guide "
+        "how often and how closely to engage them."
+    ),
+    "stakeholder engagement assessment matrix": (
+        "This matrix compares each stakeholder's current and desired engagement level "
+        "so the team can plan steps to close the gap."
+    ),
+    "sprint review": (
+        "A Sprint Review is where the Scrum Team and stakeholders inspect the increment, "
+        "discuss outcomes, and adapt future work."
+    ),
+    "daily scrum": (
+        "The Daily Scrum is a short event for developers to inspect progress toward the "
+        "Sprint Goal and adapt their plan."
+    ),
+    "definition of done": (
+        "The Definition of Done is a shared description of the quality and completion "
+        "checks an increment must meet."
+    ),
+    "product owner": (
+        "The Product Owner is accountable for maximizing product value and managing "
+        "the Product Backlog."
+    ),
+    "risk register": (
+        "A risk register tracks identified risks, owners, analysis, triggers, and planned "
+        "response strategies."
+    ),
+    "risk mitigation": (
+        "Risk mitigation reduces the probability or impact of a threat through planned "
+        "preventive or impact-limiting actions."
+    ),
+    "risk transfer": (
+        "Risk transfer shifts responsibility for some or all of a threat's financial impact "
+        "to another party, such as through insurance."
+    ),
+    "servant leadership": (
+        "Servant leadership focuses on enabling the team, listening, removing impediments, "
+        "and supporting shared ownership."
+    ),
+    "data readiness": (
+        "Data readiness checks whether data is available, relevant, sufficiently complete, "
+        "and suitable for the intended AI use case."
+    ),
+    "acceptance criteria": (
+        "Acceptance criteria are specific conditions a deliverable must satisfy to be "
+        "accepted by its customer or product owner."
+    ),
     "critical path": (
         "The critical path is the longest sequence of dependent activities that determines "
         "the shortest possible project duration."
