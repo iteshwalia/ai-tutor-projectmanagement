@@ -181,6 +181,19 @@ This log records the distinct requests, implementation decisions, checks, and de
 
 **Verification:** All 22 automated tests passed. A live browser save changed the difficulty and closed the dialog; the original preference was restored afterward. Failure-state feedback is covered by the updated dialog UI.
 
+### 14. Add browser regression tests and a report
+
+**Request:** Write Playwright tests and create a regression report for the major UI functionality.
+
+**Work:**
+
+- Added Python Playwright UI tests that launch the Flask app locally with temporary SQLite storage and force the built-in demo tutor, avoiding production data and model credentials.
+- Covered initial UI and settings dialogs, profile save failure/retry/persistence, all four difficulty-aware mode prompts, chat input, quiz and practice answer feedback, progress metrics, report download, and session reset.
+- Added Chromium installation to GitHub Actions and documented local setup and test commands.
+- Created Markdown and PDF versions of the [regression test report](REGRESSION_TEST_REPORT.md) and the [full test report](TEST_REPORT.md), including test results and environment limitations.
+
+**Verification:** The combined API and browser suite passed all 26 tests; Ruff and whitespace checks passed. The UI tests ran in Chromium against the temporary local application.
+
 ## Current state and known limits
 
 - The live service reports Google Gemini when `GEMINI_API_KEY` is attached to the Render service through its environment configuration.

@@ -1,6 +1,7 @@
 # PM Mentor Test Report
 
 **Test date:** 22 November 2026  
+- **PDF report:** [TEST_REPORT.pdf](TEST_REPORT.pdf)
 - **Previously deployed release:** `7ef2f07419cb69acb9a8415fb4d2b0ba6df28884`
 - **Learner and Gemini release:** `6b41578a8ccffeb1dc77a876530f08f69997342e`
 - **Package refactor release:** `763ef447425acd9872fe270d80b7f11265b61668`
@@ -10,12 +11,13 @@ The historical scroll-test evidence below is for the previous release. Follow-up
 
 ## Result
 
-**Pass.** The deployed releases were checked in Render and in a browser. The latest difficulty and progress-report source changes pass automated tests, lint, Python compilation, whitespace validation, and SVG validation.
+**Pass.** The deployed releases were checked in Render and in a browser. The latest source passes **26 automated tests**: 22 API tests and four Playwright browser regression tests. See the [detailed regression report](REGRESSION_TEST_REPORT.md).
 
 ## Automated checks
 
 | Check | Result |
 |---|---|
+| Current API and browser regression suite | Passed: 26 tests (22 API and 4 Playwright UI tests) |
 | `.\.venv\Scripts\python.exe -m pytest` (release commit) | Passed: 14 tests |
 | `.\.venv\Scripts\python.exe -m ruff check .` | Passed: no lint issues |
 | `.\.venv\Scripts\python.exe -m compileall -q app.py pm_mentor tests` | Passed |
@@ -29,7 +31,7 @@ The source adds Gemini configuration, expands the question and demo-knowledge ba
 
 The package and diagram refactor passed all **19 tests**, Ruff, Python compilation, `git diff --check`, and SVG XML validation. Render deployed commit `763ef44`; `/healthz` returned `{"status":"ok"}` and `/api/status` confirmed Gemini was configured.
 
-The difficulty-selection and progress-report changes passed **22 tests**, Ruff, Python compilation, `git diff --check`, and SVG XML validation. Tests cover all topic/difficulty combinations, difficulty-specific tutor guidance, and report contents and download headers.
+The difficulty-selection and progress-report changes passed **22 API tests**, Ruff, Python compilation, `git diff --check`, and SVG XML validation. Tests cover all topic/difficulty combinations, difficulty-specific tutor guidance, and report contents and download headers. The current browser suite extends that coverage; results and limits are in [REGRESSION_TEST_REPORT.md](REGRESSION_TEST_REPORT.md).
 
 - Render manually deployed commit `6b41578` successfully and reports it Live.
 - A fresh page load showed the learner name as **Itesh** and the updated Gemini setup instructions.

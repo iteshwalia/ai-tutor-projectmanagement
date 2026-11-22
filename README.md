@@ -27,12 +27,24 @@ py -m venv .venv
 
 Open http://127.0.0.1:5000. In VS Code, use **Run and Debug → PM Mentor (development)** or run the **Install development dependencies**, **Run tests**, and **Lint Python** tasks.
 
+### Browser regression tests
+
+The Playwright suite launches a temporary local Flask app with isolated SQLite storage and the built-in demo tutor. Install Chromium once, then run all API and browser tests:
+
+```powershell
+.\.venv\Scripts\python.exe -m playwright install chromium
+.\.venv\Scripts\python.exe -m pytest
+```
+
+The browser checks cover profile editing and save errors, all learning-mode prompts, chat, practice and quiz feedback, progress reporting and download, reset, and settings dialogs. See the [regression test report](REGRESSION_TEST_REPORT.md) for coverage and the latest run.
+
 ### macOS/Linux
 
 ```sh
 python3 -m venv .venv
 . .venv/bin/activate
 python -m pip install -r requirements-dev.txt
+python -m playwright install chromium
 python app.py
 ```
 
@@ -165,6 +177,9 @@ Review `git status` before committing. `.gitignore` excludes local environments,
 
 - [Development story, prompts, iterations, and test history](DEVELOPMENT.md)
 - [Latest test report and deployment verification](TEST_REPORT.md)
+- [Full test report (PDF)](TEST_REPORT.pdf)
+- [Playwright UI regression test report](REGRESSION_TEST_REPORT.md)
+- [Playwright UI regression report (PDF)](REGRESSION_TEST_REPORT.pdf)
 - [Visual test report (PDF)](VISUAL_TEST_REPORT.pdf)
 - [Architecture diagram and component responsibilities](architecture.md)
 - [Architecture SVG](architecture.svg)
