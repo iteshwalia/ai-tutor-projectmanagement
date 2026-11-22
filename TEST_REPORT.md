@@ -1,14 +1,15 @@
 # PM Mentor Test Report
 
 **Test date:** 22 November 2026  
-**Release commit:** `7ef2f07419cb69acb9a8415fb4d2b0ba6df28884`  
-**Deployment:** [https://pm-mentor.onrender.com](https://pm-mentor.onrender.com/)
+- **Previously deployed release:** `7ef2f07419cb69acb9a8415fb4d2b0ba6df28884`
+- **Current deployment:** `6b41578a8ccffeb1dc77a876530f08f69997342e`
+- **Deployment:** [https://pm-mentor.onrender.com](https://pm-mentor.onrender.com/)
 
-The live deployment evidence in this report is for the release commit above. Follow-up source validation is recorded separately and has not yet been deployed.
+The historical scroll-test evidence below is for the previous release. Follow-up source validation and current deployment evidence are recorded separately.
 
 ## Result
 
-**Pass, with an AI-provider limitation.** The release's automated suite, lint, and Python compilation passed. The scrolling fix was deployed and verified in the live browser. The deployed app uses its built-in demo tutor because no model API key is configured.
+**Pass, with an AI-provider limitation.** Automated tests, lint, and Python compilation passed. The scroll fix was verified in the live browser, and the current source was deployed and checked in a fresh browser page. The app uses its built-in demo tutor because no model API key is configured.
 
 ## Automated checks
 
@@ -23,7 +24,11 @@ The automated tests cover page and health endpoints, frontend module serving, de
 
 ## Follow-up source validation
 
-The current working source adds Gemini configuration, expands the question and demo-knowledge base, and changes the default learner name to Itesh. Local verification passed **19 tests**, Ruff, Python compilation, and `git diff --check`. Tests cover Gemini request defaults and secret-safe status, expanded CPMAI content, and migration of the legacy placeholder profile. The Gemini request is mocked; no real API key has been used. These changes still require a Render deployment before the live checks below apply to them.
+The current source adds Gemini configuration, expands the question and demo-knowledge base, and changes the default learner name to Itesh. Local verification passed **19 tests**, Ruff, Python compilation, and `git diff --check`. Tests cover Gemini request defaults and secret-safe status, expanded CPMAI content, and migration of the legacy placeholder profile. The Gemini request is mocked; no real API key has been used.
+
+- Render manually deployed commit `6b41578` successfully and reports it Live.
+- A fresh page load showed the learner name as **Itesh** and the updated Gemini setup instructions.
+- The already-open browser tab still displayed the older cached page until refreshed or reopened.
 
 ## Live deployment checks
 
