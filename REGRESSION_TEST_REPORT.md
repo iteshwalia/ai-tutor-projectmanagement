@@ -4,6 +4,8 @@
 **Application baseline:** `262aeaa`
 **Result:** **PASS — 26 tests**
 
+Word version: [REGRESSION_TEST_REPORT.docx](REGRESSION_TEST_REPORT.docx)
+
 PDF version: [REGRESSION_TEST_REPORT.pdf](REGRESSION_TEST_REPORT.pdf)
 
 ## Test setup

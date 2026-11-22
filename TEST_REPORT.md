@@ -1,6 +1,7 @@
 # PM Mentor Test Report
 
 **Test date:** 22 November 2026  
+- **Word report:** [TEST_REPORT.docx](TEST_REPORT.docx)
 - **PDF report:** [TEST_REPORT.pdf](TEST_REPORT.pdf)
 - **Previously deployed release:** `7ef2f07419cb69acb9a8415fb4d2b0ba6df28884`
 - **Learner and Gemini release:** `6b41578a8ccffeb1dc77a876530f08f69997342e`
