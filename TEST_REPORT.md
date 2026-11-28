@@ -1,55 +1,46 @@
 # PM Mentor Test Report
 
-**Test date:** 22 November 2026  
-- **Word report:** [TEST_REPORT.docx](TEST_REPORT.docx)
-- **PDF report:** [TEST_REPORT.pdf](TEST_REPORT.pdf)
-- **Previously deployed release:** `7ef2f07419cb69acb9a8415fb4d2b0ba6df28884`
-- **Learner and Gemini release:** `6b41578a8ccffeb1dc77a876530f08f69997342e`
-- **Package refactor release:** `763ef447425acd9872fe270d80b7f11265b61668`
-- **Deployment:** [https://pm-mentor.onrender.com](https://pm-mentor.onrender.com/)
+**Report date:** 28 November 2026
+**Result:** **PASS — 30 automated tests**
 
-The historical scroll-test evidence below is for the previous release. Follow-up source validation and current deployment evidence are recorded separately.
+Word edition: [TEST_REPORT.docx](TEST_REPORT.docx)
 
-## Result
+## Summary
 
-**Pass.** The deployed releases were checked in Render and in a browser. The latest source passes **26 automated tests**: 22 API tests and four Playwright browser regression tests. See the [detailed regression report](REGRESSION_TEST_REPORT.md).
+The current application passed its full automated test suite. Verification covered the Flask API, model-backed question generation through mocked provider responses, answer evaluation, personalized feedback, topic best practices, browser flows, and responsive presentation checks.
 
-## Automated checks
+## Test results
 
 | Check | Result |
 |---|---|
-| Current API and browser regression suite | Passed: 26 tests (22 API and 4 Playwright UI tests) |
-| `.\.venv\Scripts\python.exe -m pytest` (release commit) | Passed: 14 tests |
-| `.\.venv\Scripts\python.exe -m ruff check .` | Passed: no lint issues |
-| `.\.venv\Scripts\python.exe -m compileall -q app.py pm_mentor tests` | Passed |
-| GitHub Actions CI for the release commit | Passed: [workflow run 2](https://github.com/iteshwalia/ai-tutor-projectmanagement/actions/runs/45027726219) |
+| Full pytest suite | **30 passed** |
+| Backend/API tests | **26 passed** |
+| Playwright browser tests | **4 passed** |
+| Ruff checks on changed Python and JavaScript paths | **Passed** |
+| `git diff --check` | **Passed** |
+| Local visual review | Desktop and mobile layouts reviewed; findings in [VISUAL_TEST_REPORT.md](VISUAL_TEST_REPORT.md) |
 
-The automated tests cover page and health endpoints, frontend module serving, demo chat responses, input validation, question generation and evaluation, progress updates and reset, profile validation and persistence, model-request forwarding with a mocked provider, HTTPS endpoint restrictions, secret-safe status output, production configuration, session-cookie contents, and security headers.
+Commands used:
 
-## Follow-up source validation
+```text
+python -m pytest -q
+python -m ruff check pm_mentor\learning_content.py pm_mentor\routes\learner.py pm_mentor\services\tutor.py static\js tests\test_app.py tests\ui\test_major_flows.py
+git diff --check
+```
 
-The source adds Gemini configuration, expands the question and demo-knowledge base, and changes the default learner name to Itesh. Local verification passed **19 tests**, Ruff, Python compilation, and `git diff --check`. Tests cover Gemini request defaults and secret-safe status, expanded CPMAI content, and migration of the legacy placeholder profile. Automated provider forwarding is mocked; a separate live check confirmed the configured Gemini provider.
+## Coverage highlights
 
-The package and diagram refactor passed all **19 tests**, Ruff, Python compilation, `git diff --check`, and SVG XML validation. Render deployed commit `763ef44`; `/healthz` returned `{"status":"ok"}` and `/api/status` confirmed Gemini was configured.
+- Each question request uses the configured model to generate a new question; malformed model output is returned as an explicit error rather than silently replaced with a bank question.
+- Without a configured model key, practice and quiz use the topic- and difficulty-matched built-in question bank.
+- Correct and incorrect answers update overall and topic progress.
+- Correct answers can be submitted as a choice letter (`A`–`D`), including lowercase letters and an optional period, or by answer text.
+- Personalized feedback reflects the learner name, question difficulty, topic, and topic-level accuracy.
+- Topic-specific best practices are returned with evaluation feedback.
+- Profile validation, persistence, retry behavior, security headers, provider configuration, chat behavior, progress reporting, and reset behavior remain covered.
+- Browser checks cover profile dialogs, learning-mode prompts, question flows, answer feedback, progress display, report download, and reset.
 
-The difficulty-selection and progress-report changes passed **22 API tests**, Ruff, Python compilation, `git diff --check`, and SVG XML validation. Tests cover all topic/difficulty combinations, difficulty-specific tutor guidance, and report contents and download headers. The current browser suite extends that coverage; results and limits are in [REGRESSION_TEST_REPORT.md](REGRESSION_TEST_REPORT.md).
+## Test environment and limits
 
-- Render manually deployed commit `6b41578` successfully and reports it Live.
-- A fresh page load showed the learner name as **Itesh** and the updated Gemini setup instructions.
-- The already-open browser tab still displayed the older cached page until refreshed or reopened.
-- After the Gemini environment group was connected, `GET /api/status` reported `api_configured: true`, `key_name: GEMINI_API_KEY`, provider `Google Gemini`, and model `gemini-3.5-flash-lite`.
-- A harmless live chat prompt (“Explain the critical path in one sentence.”) returned a project-management explanation, and the UI identified the source as Google Gemini.
+Browser regression tests run against a local Flask app with a temporary SQLite database and the demo tutor. Model-provider behavior is tested with mocked responses; this run did not make a live Gemini or OpenAI-compatible request and did not verify the deployed Render service.
 
-## Live deployment checks
-
-- Render built the Docker image and reported the service live for the release commit.
-- `GET /healthz` returned `{"status":"ok"}`.
-- The deployed homepage loaded in the browser.
-- After four sequential chat exchanges, waiting for each reply to finish, the chat container measured 240 px high with 1,166 px of message content. Its scroll position was 925.6 px of a 926 px maximum (0.4 px from the bottom), confirming it remained scrollable and followed the latest reply.
-
-## Limitations and follow-up
-
-- A live Gemini request was verified. The OpenAI-compatible alternative has not been tested with a live credential; automated provider-forwarding tests use mocked HTTP responses.
-- Gemini's free tier has usage limits, and Google may use free-tier prompts to improve its products. Do not send sensitive, confidential, or personally identifying information; check Google's current [Gemini API terms](https://ai.google.dev/gemini-api/terms).
-- The Render Free service can sleep while idle, and its local SQLite storage is ephemeral. Cold starts and loss of learner progress after restarts or redeploys are expected on this tier.
-- The repository is deployed from a public-repository URL. New commits may require a manual Render deploy unless the repository is connected through Render's Git provider integration.
+Visual checks used an isolated local app without provider credentials. The review was not a pixel-diff, cross-browser, accessibility, or formal usability study. See [REGRESSION_TEST_REPORT.md](REGRESSION_TEST_REPORT.md) and [USER_EXPERIENCE_REPORT.md](USER_EXPERIENCE_REPORT.md) for additional detail.

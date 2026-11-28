@@ -49,10 +49,11 @@ These are prompt examples documented in DEVELOPMENT.md. They capture the directi
 
 - Added project-management questions with choices, hints, accepted answers, and explanations.
 - Added answer evaluation and progress tracking for attempted and correct questions, organized by topic.
+- Added feedback personalized to learner profile and topic accuracy, with an actionable best practice for each project-management topic after every answer.
 - Added learner-specific topic, difficulty, and welcome-message behavior.
 - Kept answer keys on the server rather than exposing them in question responses.
 
-**Implementation note:** Practice questions are selected randomly from the authored question bank for the learner's topic. The Practice API does not currently ask Gemini to generate a new question for every request.
+**Implementation note:** When an AI provider is configured, every question request asks the model to generate a fresh question matched to the learner's topic and difficulty. Without a provider key, the app selects from the authored question bank.
 
 ### 4. Turn the prototype into a Python web application
 

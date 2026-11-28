@@ -1,41 +1,39 @@
-# PM Mentor UI Regression Test Report
+# PM Mentor Regression Test Report
 
-**Test date:** 22 November 2026
-**Application baseline:** `262aeaa`
-**Result:** **PASS — 26 tests**
+**Report date:** 28 November 2026
+**Result:** **PASS — 30 tests**
 
-Word version: [REGRESSION_TEST_REPORT.docx](REGRESSION_TEST_REPORT.docx)
-
-PDF version: [REGRESSION_TEST_REPORT.pdf](REGRESSION_TEST_REPORT.pdf)
+Word edition: [REGRESSION_TEST_REPORT.docx](REGRESSION_TEST_REPORT.docx)
 
 ## Test setup
 
-The browser suite starts a local Flask app with a temporary SQLite database, fresh browser contexts, and the built-in demo tutor. It does not use learner data or credentials from the deployed Render service. Browser checks run in Playwright Chromium.
+The automated browser suite runs the application locally with a temporary SQLite database and the demo tutor. It does not use learner data or credentials from the deployed service. API tests mock external model calls where model behavior is under test.
 
 ## Regression matrix
 
 | Case | Coverage | Result |
 |---|---|---|
-| UI-01 — Home and dialogs | Welcome/profile/topic display, topic-selector profile dialog, focus restoration, settings dialog open/close | Pass |
-| UI-02 — Learner profile | Simulated HTTP 503, visible retry error, enabled retry button, successful Advanced save, dialog close, persistence after reload | Pass |
-| UI-03 — Learning modes | Learn, Practice, Quiz, and Challenge prompts include the selected topic and difficulty | Pass |
-| UI-04 — Learning and progress | Chat submission by Enter, quiz question and incorrect feedback, practice question and correct feedback, progress metrics, report download contents, session reset | Pass |
-| API — Existing backend suite | Profile and question APIs, answer evaluation, progress, provider handling, security/configuration checks | Pass |
+| API — Profile and session | Profile validation, persistence, default profile migration, cookie contents, reset | Pass |
+| API — Questions and evaluation | Topic/difficulty matching, fresh model question per request, answer text and option-letter matching, malformed model response | Pass |
+| API — Feedback and progress | Correct/incorrect scoring, personalized feedback using learner and topic progress, topic best practices, progress report | Pass |
+| API — Tutor and configuration | Demo chat, model request forwarding, Gemini defaults, provider status, HTTPS enforcement, production secret requirement | Pass |
+| UI-01 — Home and dialogs | Welcome/profile/topic display, profile dialog, settings dialog, focus restoration | Pass |
+| UI-02 — Profile recovery | Simulated save failure, visible retry guidance, successful save, reload persistence | Pass |
+| UI-03 — Learning modes | Learn, Practice, Quiz, and Challenge prompts include selected topic and difficulty | Pass |
+| UI-04 — Practice and quiz flow | Questions, lowercase option-letter submission, incorrect and correct feedback, personalized feedback, best-practice tips, metrics, report download, reset | Pass |
 
 ## Validation results
 
 | Command | Result |
 |---|---|
-| `.\.venv\Scripts\python.exe -m pytest -q` | **26 passed** |
-| `.\.venv\Scripts\ruff.exe check .` | Passed |
+| `python -m pytest -q` | **30 passed** (26 API, 4 browser) |
+| Ruff checks on changed Python and JavaScript paths | Passed |
 | `git diff --check` | Passed |
-| `.\.venv\Scripts\python.exe -m playwright install chromium` | Passed |
-
-GitHub Actions now installs Playwright Chromium before running Ruff and the complete pytest suite.
 
 ## Scope and limitations
 
-- The browser suite uses Chromium only; Firefox and WebKit are not included.
-- Model credentials are intentionally disabled; chat coverage exercises the demo tutor, not a live Gemini call.
-- The suite runs against an isolated local app, not the deployed Render instance. Previous live deployment checks remain in [TEST_REPORT.md](TEST_REPORT.md).
-- These are functional browser checks, not screenshot-based visual-diff or accessibility-audit tests.
+- Automated browser coverage uses Chromium and an isolated local app.
+- The browser suite uses demo mode. Provider request behavior is verified with mocked responses, not live credentials.
+- This is functional regression coverage; it does not include screenshot-based pixel comparison or a full assistive-technology audit.
+- Manual responsive visual observations and the option-letter fix are documented in [VISUAL_TEST_REPORT.md](VISUAL_TEST_REPORT.md).
+- No live Render deployment check was performed for this report.

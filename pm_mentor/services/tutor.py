@@ -125,6 +125,86 @@ def generate_model_response(message, profile, app_is_production):
         return None, "The AI provider could not complete the request.", 502
 
 
+def generate_model_question(profile, app_is_production):
+    prompt = (
+        "Create one original multiple-choice project-management question. "
+        f"Use the topic {json.dumps(profile['topic'])} and difficulty "
+        f"{json.dumps(profile['difficulty'])}. Do not repeat a generic definition question. "
+        "Return only a JSON object with these fields: question (string), answer (string matching "
+        "one choice exactly), accepted (array of other valid answer strings), choices (array of "
+        "exactly four distinct strings), hint (string that does not reveal the answer), and "
+        "explanation (string explaining why the answer is correct)."
+    )
+    content, error_message, status = generate_model_response(
+        prompt,
+        profile,
+        app_is_production,
+    )
+    if error_message:
+        return None, error_message, status
+
+    try:
+        question = json.loads(content)
+        if not isinstance(question, dict):
+            raise ValueError("The model response must be a JSON object.")
+
+        text_fields = ("question", "answer", "hint", "explanation")
+        if any(
+            not isinstance(question.get(field), str)
+            or not question[field].strip()
+            or len(question[field]) > 1200
+            for field in text_fields
+        ):
+            raise ValueError("The model response contains an invalid question field.")
+
+        choices = question.get("choices")
+        if (
+            not isinstance(choices, list)
+            or len(choices) != 4
+            or any(not isinstance(choice, str) or not choice.strip() for choice in choices)
+            or len({choice.strip().casefold() for choice in choices}) != 4
+        ):
+            raise ValueError("The model response must contain four distinct choices.")
+
+        answer = question["answer"].strip()
+        answer_key = " ".join(answer.casefold().split())
+        choice_keys = [" ".join(choice.strip().casefold().split()) for choice in choices]
+        if answer_key not in choice_keys:
+            raise ValueError("The model response answer must match one of its choices.")
+
+        accepted = question.get("accepted", [])
+        if not isinstance(accepted, list) or any(
+            not isinstance(value, str) or not value.strip() for value in accepted
+        ):
+            raise ValueError("The model response contains invalid accepted answers.")
+        accepted_answers = {
+            " ".join(value.strip().casefold().split()): value.strip()
+            for value in [answer, *accepted]
+        }
+        answer_index = choice_keys.index(answer_key)
+        answer_letter = chr(ord("A") + answer_index)
+        accepted_answers[answer_letter.casefold()] = answer_letter
+        accepted_answers[f"{answer_letter.casefold()}."] = f"{answer_letter}."
+
+        return (
+            {
+                "topic": profile["topic"],
+                "difficulty": profile["difficulty"],
+                "question": question["question"].strip(),
+                "answer": answer,
+                "accepted": list(accepted_answers.values()),
+                "choices": [choice.strip() for choice in choices],
+                "hint": question["hint"].strip(),
+                "explanation": question["explanation"].strip(),
+            },
+            None,
+            None,
+        )
+    except (json.JSONDecodeError, TypeError, ValueError):
+        logger.exception("AI provider returned an invalid practice question")
+        return None, "The AI provider returned an invalid question. Please try again.", 502
+
+
 def generate_demo_response(message, profile):
     text = message.lower()
     for keyword, answer in _fallback_knowledge().items():

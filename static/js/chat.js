@@ -60,7 +60,12 @@ async function submitAnswer(answer) {
         `<p><strong>Hint:</strong> ${escapeHTML(result.hint)}</p>` +
         `<p><strong>Correct answer:</strong> ${escapeHTML(result.correct_answer)}</p>` +
         `<p>${escapeHTML(result.explanation)}</p><p>Keep going; you can try another practice question.</p></div>`;
-    addMessage("assistant", feedback);
+    const feedbackWithGuidance = feedback.replace(
+      "</div>",
+      `<p><strong>Personalized feedback:</strong> ${escapeHTML(result.personalized_feedback)}</p>` +
+      `<p><strong>Tip &amp; best practice:</strong> ${escapeHTML(result.best_practice)}</p></div>`,
+    );
+    addMessage("assistant", feedbackWithGuidance);
     Object.assign(state, result.progress);
     state.awaitingAnswer = null;
     updateSummary();

@@ -78,8 +78,9 @@ We also added:
 - Explicit correct and incorrect feedback
 - Short explanations after evaluation
 - Encouraging retry language
+- Feedback personalized to the learner's profile and per-topic accuracy, plus topic-specific best practices after each answer
 
-Practice questions are selected randomly from the authored, topic-matched question bank. The current Practice API does not ask Gemini to invent a new question on each request.
+When a model provider is configured, each Practice or Quiz question request asks it to create a fresh question for the learner's selected topic and difficulty. Without a provider key, the app selects a matching question from the built-in bank.
 
 ### Iteration 4: Adding progress and recommendations
 
@@ -215,7 +216,7 @@ An incorrect answer should receive:
 The automated suite (`py -m pytest -q`) covers:
 
 - Home and health endpoints
-- Difficulty-matched practice questions for every topic and level
+- AI-generated, topic- and difficulty-matched questions with a built-in bank fallback when no provider key is set
 - Learner progress report metrics, topic breakdown, and download headers
 - Demo response and configured model request forwarding
 - Input validation for chat, profile, and answer endpoints

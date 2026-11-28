@@ -7,8 +7,10 @@ PM Mentor is a focused project-management tutor for working professionals. It co
 - Learn, Practice, Quiz, and Challenge modes
 - Learner profile, topic, and difficulty selection
 - Project-management examples and answer feedback
+- Personalized feedback that adapts to learner progress and topic-specific best practices after each answer
 - Session progress, strengths, weaknesses, and next-lesson suggestions
-- Difficulty-matched practice questions and a downloadable progress report
+- Fresh AI-generated practice and quiz questions when a model is configured, with a matching demo question bank when no key is available
+- A downloadable progress report
 - Demo responses without an AI credential
 - Optional Google Gemini free-tier or other OpenAI-compatible model integration
 - Docker deployment and GitHub Actions checks
@@ -109,7 +111,7 @@ The backend supports Google Gemini and OpenAI-compatible chat-completions APIs. 
 | `FLASK_SECRET_KEY` | Required signing key for production Flask sessions |
 | `FLASK_ENV` | Set to `production` to enable secure-cookie production behavior |
 
-Without a model key, `/api/chat` replies from built-in demo knowledge; it does not call an AI model. The `/api/status` endpoint and Settings panel show which response source is active, without revealing the key.
+With a model key configured, each `/api/question` request asks the model for a fresh question matching the learner's topic and difficulty. Without a key, questions come from the built-in topic- and difficulty-matched bank, and `/api/chat` replies from demo knowledge. The `/api/status` endpoint and Settings panel show the chat response source, without revealing the key.
 
 Non-local model endpoints must use HTTPS. HTTP is allowed only for loopback development endpoints.
 

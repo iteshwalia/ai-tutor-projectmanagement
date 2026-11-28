@@ -10,7 +10,7 @@ from unittest.mock import MagicMock, patch
 from flask.sessions import SecureCookieSessionInterface
 
 from app import create_app
-from pm_mentor.learning_content import LEVELS, TOPICS
+from pm_mentor.learning_content import LEVELS, QUESTION_BANK, TOPICS
 
 
 class TutorApplicationTests(unittest.TestCase):
@@ -77,6 +77,39 @@ class TutorApplicationTests(unittest.TestCase):
         self.assertEqual(answer.json["progress"]["attempted"], 1)
         self.assertEqual(answer.json["progress"]["correct"], 1)
 
+    def test_feedback_adapts_to_profile_and_topic_progress(self):
+        question_item = next(
+            item
+            for item in QUESTION_BANK
+            if item["topic"] == "Risk Management" and item["difficulty"] == "Advanced"
+        )
+        self.client.post(
+            "/api/profile",
+            json={
+                "name": "Sam Rivera",
+                "topic": "Risk Management",
+                "difficulty": "Advanced",
+            },
+        )
+        with (
+            patch.dict(os.environ, {}, clear=True),
+            patch("pm_mentor.routes.learner.random.choice", return_value=question_item),
+        ):
+            self.client.get("/api/question")
+            incorrect = self.client.post("/api/evaluate", json={"answer": "not the answer"})
+            self.client.get("/api/question")
+            correct = self.client.post(
+                "/api/evaluate",
+                json={"answer": question_item["accepted"][0]},
+            )
+
+        self.assertIn("Good attempt, Sam", incorrect.json["personalized_feedback"])
+        self.assertIn("Risk Management", incorrect.json["personalized_feedback"])
+        self.assertIn("Advanced", incorrect.json["personalized_feedback"])
+        self.assertIn("risk an owner", incorrect.json["best_practice"])
+        self.assertIn("Correct, Sam", correct.json["personalized_feedback"])
+        self.assertIn("50% across 2 questions", correct.json["personalized_feedback"])
+
     def test_questions_match_selected_topic_and_difficulty(self):
         for topic in sorted(TOPICS):
             for difficulty in sorted(LEVELS):
@@ -100,11 +133,114 @@ class TutorApplicationTests(unittest.TestCase):
                     )
                 )
 
+    def test_configured_model_generates_a_new_question_for_each_request(self):
+        generated = [
+            {
+                "question": "Which action best protects a newly identified project risk?",
+                "answer": "Assign an owner and define a response",
+                "accepted": ["Assign an owner"],
+                "choices": [
+                    "Ignore it until it occurs",
+                    "Assign an owner and define a response",
+                    "Remove it from the register",
+                    "Escalate every risk immediately",
+                ],
+                "hint": "Think about planned risk responses.",
+                "explanation": "An owner tracks the risk and coordinates its planned response.",
+            },
+            {
+                "question": "What should a project manager do first when scope changes?",
+                "answer": "Assess the impact through change control",
+                "accepted": [],
+                "choices": [
+                    "Assess the impact through change control",
+                    "Start the requested work",
+                    "Remove a different deliverable",
+                    "Update the schedule without review",
+                ],
+                "hint": "Use the agreed process before changing baselines.",
+                "explanation": "Impact analysis and approval should precede baseline changes.",
+            },
+        ]
+        mock_responses = []
+        for item in generated:
+            response = MagicMock()
+            response.__enter__.return_value.read.return_value = json.dumps(
+                {"choices": [{"message": {"content": json.dumps(item)}}]}
+            ).encode()
+            mock_responses.append(response)
+
+        with (
+            patch.dict(os.environ, {"OPENAI_API_KEY": "test-token"}, clear=True),
+            patch(
+                "pm_mentor.services.tutor.request.urlopen",
+                side_effect=mock_responses,
+            ) as urlopen,
+        ):
+            first = self.client.get("/api/question")
+            first_answer = self.client.post("/api/evaluate", json={"answer": "B"})
+            second = self.client.get("/api/question")
+            second_answer = self.client.post("/api/evaluate", json={"answer": "A"})
+
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(second.status_code, 200)
+        self.assertNotEqual(first.json["question"], second.json["question"])
+        self.assertEqual(first.json["topic"], "Project Planning & Scheduling")
+        self.assertEqual(first.json["difficulty"], "Intermediate")
+        self.assertNotIn("answer", first.json)
+        self.assertNotIn("accepted", first.json)
+        self.assertEqual(first_answer.status_code, 200)
+        self.assertTrue(first_answer.json["correct"])
+        self.assertTrue(second_answer.json["correct"])
+        self.assertEqual(urlopen.call_count, 2)
+
+    def test_invalid_model_question_returns_error_instead_of_bank_fallback(self):
+        mock_response = MagicMock()
+        mock_response.__enter__.return_value.read.return_value = json.dumps(
+            {"choices": [{"message": {"content": "not valid JSON"}}]}
+        ).encode()
+        with (
+            patch.dict(os.environ, {"OPENAI_API_KEY": "test-token"}, clear=True),
+            patch(
+                "pm_mentor.services.tutor.request.urlopen",
+                return_value=mock_response,
+            ),
+        ):
+            response = self.client.get("/api/question")
+
+        self.assertEqual(response.status_code, 502)
+        self.assertEqual(response.json["source"], "ai")
+        self.assertIn("invalid question", response.json["error"])
+        self.assertEqual(
+            self.client.post("/api/evaluate", json={"answer": "anything"}).status_code,
+            400,
+        )
+
     def test_answer_matching_does_not_accept_substrings(self):
         self.get_pert_question()
         answer = self.client.post("/api/evaluate", json={"answer": "not 6"})
         self.assertEqual(answer.status_code, 200)
         self.assertFalse(answer.json["correct"])
+
+    def test_answer_evaluation_accepts_option_letters_and_rejects_wrong_letters(self):
+        question_item = next(
+            item
+            for item in QUESTION_BANK
+            if item["question"].startswith("A task has an optimistic estimate")
+        )
+        with (
+            patch.dict(os.environ, {}, clear=True),
+            patch("pm_mentor.routes.learner.random.choice", return_value=question_item),
+        ):
+            self.client.get("/api/question")
+            correct = self.client.post("/api/evaluate", json={"answer": "b."})
+            self.client.get("/api/question")
+            incorrect = self.client.post("/api/evaluate", json={"answer": "A"})
+
+        self.assertTrue(correct.json["correct"])
+        self.assertFalse(incorrect.json["correct"])
+        self.assertEqual(incorrect.json["progress"]["attempted"], 2)
+        self.assertEqual(incorrect.json["progress"]["correct"], 1)
 
     def test_evaluation_requires_active_question_and_answer(self):
         self.assertEqual(self.client.post("/api/evaluate", json={"answer": "6"}).status_code, 400)

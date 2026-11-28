@@ -94,6 +94,8 @@ def test_chat_practice_quiz_progress_download_and_reset(page: Page, app_url: str
         page.locator("#sendButton").click()
     expect(page.locator("#chatContent")).to_contain_text("Not quite — good attempt.")
     expect(page.locator("#chatContent")).to_contain_text("Hint:")
+    expect(page.locator("#chatContent")).to_contain_text("Personalized feedback:")
+    expect(page.locator("#chatContent")).to_contain_text("Tip & best practice:")
 
     page.locator('[data-mode="practice"]').click()
     with page.expect_response(lambda response: response.url.endswith("/api/question")) as response:
@@ -106,10 +108,14 @@ def test_chat_practice_quiz_progress_download_and_reset(page: Page, app_url: str
         and item["topic"] == practice_question["topic"]
         and item["difficulty"] == practice_question["difficulty"]
     )
-    page.locator("#messageInput").fill(question_record["answer"])
+    answer_index = question_record["choices"].index(question_record["answer"])
+    answer_letter = chr(ord("a") + answer_index)
+    page.locator("#messageInput").fill(f"{answer_letter}.")
     with page.expect_response(lambda item: item.url.endswith("/api/evaluate")):
         page.locator("#sendButton").click()
     expect(page.locator("#chatContent")).to_contain_text("Correct — excellent work.")
+    expect(page.locator("#chatContent")).to_contain_text("Personalized feedback:")
+    expect(page.locator("#chatContent")).to_contain_text("Tip & best practice:")
 
     page.locator("#sessionSummary").click()
     summary = page.locator("#summaryModal")

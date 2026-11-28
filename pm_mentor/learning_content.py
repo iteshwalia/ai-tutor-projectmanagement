@@ -11,6 +11,31 @@ TOPICS = {
 LEVELS = {"Beginner", "Intermediate", "Advanced"}
 DEFAULT_LEARNER_NAME = "Itesh"
 
+TOPIC_BEST_PRACTICES = {
+    "Project Planning & Scheduling": (
+        "Confirm scope and dependencies before estimating, and update the schedule when "
+        "assumptions change."
+    ),
+    "Agile Methodologies": (
+        "Keep the backlog ordered by value and refine upcoming work with the delivery team."
+    ),
+    "Stakeholder Management": (
+        "Tailor communication to each stakeholder's influence and information needs, then "
+        "revisit engagement as conditions change."
+    ),
+    "Risk Management": (
+        "Give each significant risk an owner, a trigger, a response, and a regular review date."
+    ),
+    "Leadership & Team Performance": (
+        "Clarify outcomes and decision rights, and make it safe for the team to raise blockers "
+        "early."
+    ),
+    "CPMAI - AI Project Management": (
+        "Check data quality, representativeness, and readiness before modeling, and retain human "
+        "oversight after deployment."
+    ),
+}
+
 QUESTION_BANK = [
     {
         "topic": "Project Planning & Scheduling",

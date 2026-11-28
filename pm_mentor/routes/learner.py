@@ -1,13 +1,20 @@
 """Learner profile, practice, and progress API routes."""
 
 import random
+import re
 from datetime import datetime
 
-from flask import Blueprint, jsonify, make_response
+from flask import Blueprint, current_app, jsonify, make_response
 from flask import request as flask_request
 
 from pm_mentor.learner_repository import get_learner_state, save_learner_state
-from pm_mentor.learning_content import LEVELS, QUESTION_BANK, TOPICS
+from pm_mentor.learning_content import (
+    LEVELS,
+    QUESTION_BANK,
+    TOPIC_BEST_PRACTICES,
+    TOPICS,
+)
+from pm_mentor.services.tutor import generate_model_question, public_provider_status
 
 learner = Blueprint("learner", __name__, url_prefix="/api")
 
@@ -43,12 +50,22 @@ def update_profile():
 def question():
     state = get_learner_state()
     profile = state["profile"]
-    matching = [
-        item
-        for item in QUESTION_BANK
-        if item["topic"] == profile["topic"] and item["difficulty"] == profile["difficulty"]
-    ]
-    item = random.choice(matching)
+    if public_provider_status()["api_configured"]:
+        item, error, status = generate_model_question(
+            profile,
+            current_app.config["ENVIRONMENT"] == "production",
+        )
+        if error:
+            return jsonify({"error": error, "source": "ai"}), status
+    else:
+        matching = [
+            item
+            for item in QUESTION_BANK
+            if item["topic"] == profile["topic"]
+            and item["difficulty"] == profile["difficulty"]
+        ]
+        item = random.choice(matching)
+
     state["active_question"] = item
     save_learner_state(state)
     return jsonify(
@@ -78,8 +95,7 @@ def evaluate():
         return jsonify({"error": "No active question."}), 400
 
     normalized_answer = " ".join(answer.split())
-    accepted = {" ".join(value.casefold().split()) for value in item["accepted"]}
-    correct = normalized_answer in accepted
+    correct = _answer_is_correct(normalized_answer, item)
     progress = state["progress"]
     progress["attempted"] += 1
     if correct:
@@ -91,15 +107,82 @@ def evaluate():
     state["progress"] = progress
     state["active_question"] = None
     save_learner_state(state)
+    topic_attempted = area["attempted"]
+    topic_accuracy = round(area["correct"] / topic_attempted * 100)
+    profile = state["profile"]
     return jsonify(
         {
             "correct": correct,
             "correct_answer": item["answer"],
             "hint": item["hint"],
             "explanation": item["explanation"],
+            "personalized_feedback": _personalized_feedback(
+                profile,
+                item["topic"],
+                item["difficulty"],
+                correct,
+                topic_attempted,
+                topic_accuracy,
+            ),
+            "best_practice": TOPIC_BEST_PRACTICES[item["topic"]],
             "progress": progress,
         }
     )
+
+
+def _answer_is_correct(answer, item):
+    accepted = {" ".join(value.casefold().split()) for value in item["accepted"]}
+    if answer in accepted:
+        return True
+
+    match = re.fullmatch(r"(?:option\s*)?([a-d])\.?", answer)
+    if not match:
+        return False
+
+    choice_index = ord(match.group(1)) - ord("a")
+    choices = item["choices"]
+    if choice_index >= len(choices):
+        return False
+
+    selected_choice = " ".join(choices[choice_index].casefold().split())
+    correct_choice = " ".join(item["answer"].casefold().split())
+    return selected_choice == correct_choice
+
+
+def _personalized_feedback(profile, topic, difficulty, correct, topic_attempted, topic_accuracy):
+    first_name = profile["name"].split()[0] or "Learner"
+    if correct:
+        progress_note = (
+            f"This is your first result in {topic}."
+            if topic_attempted == 1
+            else (
+                f"Your {topic} accuracy is now {topic_accuracy}% across "
+                f"{topic_attempted} questions."
+            )
+        )
+        next_step = (
+            f"At {difficulty} level, deepen your reasoning by considering why the other options "
+            "are less suitable."
+        )
+        opening = "Correct"
+    else:
+        progress_note = (
+            f"This is your first question in {topic}."
+            if topic_attempted == 1
+            else (
+                f"Your current {topic} accuracy is {topic_accuracy}% across "
+                f"{topic_attempted} questions."
+            )
+        )
+        next_steps = {
+            "Beginner": "restate the core idea in your own words",
+            "Intermediate": "compare each option against the scenario's constraints",
+            "Advanced": "check the assumptions and downstream trade-offs before choosing",
+        }
+        next_step = f"At {difficulty} level, for another try, {next_steps[difficulty]}."
+        opening = "Good attempt"
+
+    return f"{opening}, {first_name}. {progress_note} {next_step}"
 
 
 @learner.get("/progress")
