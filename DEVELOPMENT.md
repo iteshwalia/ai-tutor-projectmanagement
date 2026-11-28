@@ -82,6 +82,8 @@ We also added:
 
 When a model provider is configured, each Practice or Quiz question request asks it to create a fresh question for the learner's selected topic and difficulty. Without a provider key, the app selects a matching question from the built-in bank.
 
+Quiz mode asks the learner how many questions to take (1–20), presents them one at a time, and ends with a score report showing correct answers and percentage.
+
 ### Iteration 4: Adding progress and recommendations
 
 We introduced session progress metrics, including attempted questions and correct answers. Results began updating topic areas so the summary could identify both strengths and weak areas.

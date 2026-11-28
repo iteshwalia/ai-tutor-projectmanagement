@@ -8,4 +8,6 @@ export const state = {
   correct: 0,
   areas: {},
   awaitingAnswer: null,
+  awaitingQuizCount: false,
+  activeQuiz: null,
 };

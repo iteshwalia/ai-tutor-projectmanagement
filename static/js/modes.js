@@ -19,7 +19,7 @@ export function bindModeEvents() {
       const prompts = {
         learn: `Explain ${state.topic} at ${state.difficulty} level. ${difficultyGuidance}`,
         practice: `Give me a ${state.difficulty}-level practice question on ${state.topic}`,
-        quiz: `Start a short ${state.difficulty}-level PMP or PMI-ACP quiz on ${state.topic}`,
+        quiz: `Start a ${state.difficulty}-level PMP or PMI-ACP quiz on ${state.topic}`,
         challenge: `Give me a ${state.difficulty}-level challenge scenario on ${state.topic}`,
       };
       document.getElementById("messageInput").value = prompts[state.mode];

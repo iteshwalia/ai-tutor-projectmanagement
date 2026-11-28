@@ -29,7 +29,7 @@ After an answer, the learner sees correctness, an explanation, personalized guid
 
 ### Choose a learning activity
 
-The interface offers four modes: Learn for explanations, Practice for confidence-building questions, Quiz for knowledge checks, and Challenge for applied scenarios. A chat composer remains available for learner-directed questions.
+The interface offers four modes: Learn for explanations, Practice for confidence-building questions, Quiz for knowledge checks, and Challenge for applied scenarios. A chat composer remains available for learner-directed questions. Quiz mode asks the learner to choose 1–20 questions, presents each question in sequence, and finishes with a score report showing correct answers and percentage.
 
 ### Personalize the activity
 
@@ -55,7 +55,7 @@ Attempts, correct answers, accuracy, and per-topic results update after each ans
 ## Validation evidence
 
 - **31 automated tests passed:** 27 backend/API tests and 4 Playwright browser tests.
-- Browser tests cover profile recovery, mode prompts, quiz/practice answering, personalized-feedback and best-practice labels, progress, report download, and reset.
+- Browser tests cover profile recovery, mode prompts, quiz length validation, sequential quiz questions and the end score report, practice answering, personalized-feedback and best-practice labels, progress, report download, and reset.
 - Manual visual checks used a local isolated app at desktop (875 × 674) and mobile (390 × 844) viewport sizes. The mobile document width matched the viewport, and the chat content remained vertically scrollable.
 - Test details and responsive observations are in [REGRESSION_TEST_REPORT.md](REGRESSION_TEST_REPORT.md) and [VISUAL_TEST_REPORT.md](VISUAL_TEST_REPORT.md).
 

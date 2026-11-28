@@ -283,6 +283,19 @@ These are prompt examples documented in DEVELOPMENT.md. They capture the directi
 
 **Verification:** Added regression coverage for fenced JSON, surrounding prose, labeled choices, a letter-labeled correct answer, and alternate field names. The full local suite passed 31 tests, Ruff passed, and `git diff --check` passed. A live model response was not available locally to reproduce byte-for-byte.
 
+### 22. Ask quiz length and report the score
+
+**Request:** Ask how many questions the learner wants in a quiz, deliver the questions, and show a score report at the end.
+
+**Work:**
+
+- Added a quiz setup prompt that asks for 1–20 questions and validates the learner's count.
+- Kept quiz questions sequential and displayed the current question number; each answer continues to receive the existing feedback.
+- Added an end-of-quiz report with questions answered, correct answers, and percentage score. Practice mode remains a single-question flow.
+- Updated the quiz suggestion, documentation, and browser regression coverage.
+
+**Verification:** The browser regression test covers invalid count handling, two sequential questions, answer evaluation, the final score report, and unchanged practice/progress behavior. The full suite contains 31 tests.
+
 ## Current state and known limits
 
 - The live service reports Google Gemini when `GEMINI_API_KEY` is attached to the Render service through its environment configuration.

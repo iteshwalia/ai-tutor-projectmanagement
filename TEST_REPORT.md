@@ -7,7 +7,7 @@ Word edition: [TEST_REPORT.docx](TEST_REPORT.docx)
 
 ## Summary
 
-The current application passed its full automated test suite. Verification covered the Flask API, model-backed question generation through mocked provider responses, answer evaluation, personalized feedback, topic best practices, browser flows, and responsive presentation checks.
+The current application passed its full automated test suite. Verification covered the Flask API, model-backed question generation through mocked provider responses, answer evaluation, personalized feedback, topic best practices, quiz-length selection and end-of-quiz scoring, browser flows, and responsive presentation checks.
 
 ## Test results
 
@@ -37,8 +37,9 @@ git diff --check
 - Correct answers can be submitted as a choice letter (`A`–`D`), including lowercase letters and an optional period, or by answer text.
 - Personalized feedback reflects the learner name, question difficulty, topic, and topic-level accuracy.
 - Topic-specific best practices are returned with evaluation feedback.
+- Quiz mode asks for 1–20 questions, serves them sequentially, and displays the final correct-answer count and percentage.
 - Profile validation, persistence, retry behavior, security headers, provider configuration, chat behavior, progress reporting, and reset behavior remain covered.
-- Browser checks cover profile dialogs, learning-mode prompts, question flows, answer feedback, progress display, report download, and reset.
+- Browser checks cover profile dialogs, learning-mode prompts, quiz length validation, sequential quiz questions and score report, practice answer feedback, progress display, report download, and reset.
 
 ## Test environment and limits
 

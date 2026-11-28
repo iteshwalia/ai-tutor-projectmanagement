@@ -20,7 +20,7 @@ The automated browser suite runs the application locally with a temporary SQLite
 | UI-01 — Home and dialogs | Welcome/profile/topic display, profile dialog, settings dialog, focus restoration | Pass |
 | UI-02 — Profile recovery | Simulated save failure, visible retry guidance, successful save, reload persistence | Pass |
 | UI-03 — Learning modes | Learn, Practice, Quiz, and Challenge prompts include selected topic and difficulty | Pass |
-| UI-04 — Practice and quiz flow | Questions, lowercase option-letter submission, incorrect and correct feedback, personalized feedback, best-practice tips, metrics, report download, reset | Pass |
+| UI-04 — Practice and quiz flow | Quiz length validation (1–20), sequential questions, final score report, lowercase option-letter submission, incorrect and correct feedback, personalized feedback, best-practice tips, metrics, report download, reset | Pass |
 
 ## Validation results
 

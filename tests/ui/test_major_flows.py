@@ -83,19 +83,50 @@ def test_chat_practice_quiz_progress_download_and_reset(page: Page, app_url: str
     page.locator('[data-mode="quiz"]').click()
     quiz_prompt = input_box.input_value()
     assert "quiz" in quiz_prompt.lower()
+    page.locator("#sendButton").click()
+    expect(page.locator("#chatContent")).to_contain_text("How many questions")
+
+    input_box.fill("21")
+    page.locator("#sendButton").click()
+    expect(page.locator("#chatContent")).to_contain_text("whole number from 1 to 20")
+
+    input_box.fill("2")
     with page.expect_response(lambda response: response.url.endswith("/api/question")) as response:
         page.locator("#sendButton").click()
     quiz_question = response.value.json()
     expect(page.locator("#chatContent")).to_contain_text(
-        f"Quiz question · {quiz_question['difficulty']} level"
+        f"Quiz question 1 of 2 · {quiz_question['difficulty']} level"
     )
     page.locator("#messageInput").fill("__intentionally_wrong_answer__")
-    with page.expect_response(lambda item: item.url.endswith("/api/evaluate")):
+    with (
+        page.expect_response(lambda item: item.url.endswith("/api/evaluate")),
+        page.expect_response(lambda item: item.url.endswith("/api/question")) as next_response,
+    ):
         page.locator("#sendButton").click()
     expect(page.locator("#chatContent")).to_contain_text("Not quite — good attempt.")
     expect(page.locator("#chatContent")).to_contain_text("Hint:")
     expect(page.locator("#chatContent")).to_contain_text("Personalized feedback:")
     expect(page.locator("#chatContent")).to_contain_text("Tip & best practice:")
+    next_question = next_response.value.json()
+    expect(page.locator("#chatContent")).to_contain_text(
+        f"Quiz question 2 of 2 · {next_question['difficulty']} level"
+    )
+
+    next_record = next(
+        item
+        for item in QUESTION_BANK
+        if item["question"] == next_question["question"]
+        and item["topic"] == next_question["topic"]
+        and item["difficulty"] == next_question["difficulty"]
+    )
+    next_answer_index = next_record["choices"].index(next_record["answer"])
+    next_answer_letter = chr(ord("a") + next_answer_index)
+    page.locator("#messageInput").fill(f"{next_answer_letter}.")
+    with page.expect_response(lambda item: item.url.endswith("/api/evaluate")):
+        page.locator("#sendButton").click()
+    expect(page.locator("#chatContent")).to_contain_text("Quiz score report")
+    expect(page.locator("#chatContent")).to_contain_text("Correct answers: 1 of 2")
+    expect(page.locator("#chatContent")).to_contain_text("Score: 50%")
 
     page.locator('[data-mode="practice"]').click()
     with page.expect_response(lambda response: response.url.endswith("/api/question")) as response:
@@ -120,9 +151,9 @@ def test_chat_practice_quiz_progress_download_and_reset(page: Page, app_url: str
     page.locator("#sessionSummary").click()
     summary = page.locator("#summaryModal")
     expect(summary).to_have_class(re.compile(r"\bopen\b"))
-    expect(page.locator("#attemptedMetric")).to_have_text("2")
-    expect(page.locator("#correctMetric")).to_have_text("1")
-    expect(page.locator("#accuracyMetric")).to_have_text("50%")
+    expect(page.locator("#attemptedMetric")).to_have_text("3")
+    expect(page.locator("#correctMetric")).to_have_text("2")
+    expect(page.locator("#accuracyMetric")).to_have_text("67%")
     expect(page.locator("#topicBreakdown")).to_contain_text(
         "Project Planning & Scheduling"
     )
@@ -134,9 +165,9 @@ def test_chat_practice_quiz_progress_download_and_reset(page: Page, app_url: str
     report_path = download.path()
     assert report_path is not None
     report = Path(report_path).read_text(encoding="utf-8")
-    assert "Questions attempted: 2" in report
-    assert "Correct answers: 1" in report
-    assert "Accuracy: 50%" in report
+    assert "Questions attempted: 3" in report
+    assert "Correct answers: 2" in report
+    assert "Accuracy: 67%" in report
 
     page.locator("#summaryModal .modal-close").click()
     page.locator("#resetButton").click()

@@ -5,6 +5,7 @@ PM Mentor is a focused project-management tutor for working professionals. It co
 ## Features
 
 - Learn, Practice, Quiz, and Challenge modes
+- Quizzes ask for a question count (1–20), deliver questions in sequence, and finish with a score report
 - Learner profile, topic, and difficulty selection
 - Project-management examples and answer feedback
 - Personalized feedback that adapts to learner progress and topic-specific best practices after each answer
@@ -38,7 +39,7 @@ The Playwright suite launches a temporary local Flask app with isolated SQLite s
 .\.venv\Scripts\python.exe -m pytest
 ```
 
-The browser checks cover profile editing and save errors, all learning-mode prompts, chat, practice and quiz feedback, progress reporting and download, reset, and settings dialogs. See the [regression test report](REGRESSION_TEST_REPORT.md) for coverage and the latest run.
+The browser checks cover profile editing and save errors, all learning-mode prompts, chat, quiz length selection and score reports, practice and quiz feedback, progress reporting and download, reset, and settings dialogs. See the [regression test report](REGRESSION_TEST_REPORT.md) for coverage and the latest run.
 
 ### macOS/Linux
 
