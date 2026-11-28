@@ -1,7 +1,7 @@
 # PM Mentor Regression Test Report
 
 **Report date:** 28 November 2026
-**Result:** **PASS — 30 tests**
+**Result:** **PASS — 31 tests**
 
 Word edition: [REGRESSION_TEST_REPORT.docx](REGRESSION_TEST_REPORT.docx)
 
@@ -14,7 +14,7 @@ The automated browser suite runs the application locally with a temporary SQLite
 | Case | Coverage | Result |
 |---|---|---|
 | API — Profile and session | Profile validation, persistence, default profile migration, cookie contents, reset | Pass |
-| API — Questions and evaluation | Topic/difficulty matching, fresh model question per request, answer text and option-letter matching, malformed model response | Pass |
+| API — Questions and evaluation | Topic/difficulty matching, fresh model question per request, wrapped JSON and labeled-choice parsing, answer text and option-letter matching, malformed model response | Pass |
 | API — Feedback and progress | Correct/incorrect scoring, personalized feedback using learner and topic progress, topic best practices, progress report | Pass |
 | API — Tutor and configuration | Demo chat, model request forwarding, Gemini defaults, provider status, HTTPS enforcement, production secret requirement | Pass |
 | UI-01 — Home and dialogs | Welcome/profile/topic display, profile dialog, settings dialog, focus restoration | Pass |
@@ -26,7 +26,7 @@ The automated browser suite runs the application locally with a temporary SQLite
 
 | Command | Result |
 |---|---|
-| `python -m pytest -q` | **30 passed** (26 API, 4 browser) |
+| `python -m pytest -q` | **31 passed** (27 API, 4 browser) |
 | Ruff checks on changed Python and JavaScript paths | Passed |
 | `git diff --check` | Passed |
 

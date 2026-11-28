@@ -1,7 +1,7 @@
 # PM Mentor Test Report
 
 **Report date:** 28 November 2026
-**Result:** **PASS — 30 automated tests**
+**Result:** **PASS — 31 automated tests**
 
 Word edition: [TEST_REPORT.docx](TEST_REPORT.docx)
 
@@ -13,8 +13,8 @@ The current application passed its full automated test suite. Verification cover
 
 | Check | Result |
 |---|---|
-| Full pytest suite | **30 passed** |
-| Backend/API tests | **26 passed** |
+| Full pytest suite | **31 passed** |
+| Backend/API tests | **27 passed** |
 | Playwright browser tests | **4 passed** |
 | Ruff checks on changed Python and JavaScript paths | **Passed** |
 | `git diff --check` | **Passed** |
@@ -31,6 +31,7 @@ git diff --check
 ## Coverage highlights
 
 - Each question request uses the configured model to generate a new question; malformed model output is returned as an explicit error rather than silently replaced with a bank question.
+- Question parsing accepts common JSON wrappers and answer/choice label formats while validating that the correct answer maps to one of four distinct choices.
 - Without a configured model key, practice and quiz use the topic- and difficulty-matched built-in question bank.
 - Correct and incorrect answers update overall and topic progress.
 - Correct answers can be submitted as a choice letter (`A`–`D`), including lowercase letters and an optional period, or by answer text.

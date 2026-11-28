@@ -194,6 +194,56 @@ class TutorApplicationTests(unittest.TestCase):
         self.assertTrue(second_answer.json["correct"])
         self.assertEqual(urlopen.call_count, 2)
 
+    def test_model_question_accepts_fenced_json_and_labeled_answers(self):
+        question_data = {
+            "prompt": "Which action best protects a newly identified project risk?",
+            "correctAnswer": "B. Assign an owner and define a response",
+            "accepted_answers": "Assign an owner",
+            "options": {
+                "A": "A. Ignore it until it occurs",
+                "B": "B. Assign an owner and define a response",
+                "C": "C. Remove it from the register",
+                "D": "D. Escalate every risk immediately",
+            },
+            "tip": "Think about planned risk responses.",
+            "rationale": "An owner tracks the risk and coordinates its planned response.",
+        }
+        mock_response = MagicMock()
+        mock_response.__enter__.return_value.read.return_value = json.dumps(
+            {
+                "choices": [
+                    {
+                        "message": {
+                            "content": (
+                                "Here is the requested question:\n```json\n"
+                                f"{json.dumps(question_data)}\n```"
+                            )
+                        }
+                    }
+                ]
+            }
+        ).encode()
+
+        with (
+            patch.dict(os.environ, {"OPENAI_API_KEY": "test-token"}, clear=True),
+            patch(
+                "pm_mentor.services.tutor.request.urlopen",
+                return_value=mock_response,
+            ),
+        ):
+            question = self.client.get("/api/question")
+            answer = self.client.post("/api/evaluate", json={"answer": "B."})
+
+        self.assertEqual(question.status_code, 200)
+        self.assertIn("newly identified project risk", question.json["question"])
+        self.assertEqual(
+            question.json["choices"][1],
+            "Assign an owner and define a response",
+        )
+        self.assertNotIn("answer", question.json)
+        self.assertEqual(answer.status_code, 200)
+        self.assertTrue(answer.json["correct"])
+
     def test_invalid_model_question_returns_error_instead_of_bank_fallback(self):
         mock_response = MagicMock()
         mock_response.__enter__.return_value.read.return_value = json.dumps(

@@ -222,10 +222,74 @@ These are prompt examples documented in DEVELOPMENT.md. They capture the directi
 
 **Work:** Created Markdown, PDF, and Word versions of the [user experience and development process report](USER_EXPERIENCE_REPORT.md). It describes the intended learner, design goals, end-to-end journey, development sequence, validation evidence, constraints, and suggested next usability checks. The report distinguishes design rationale from formal user research, which has not been documented.
 
+### 17. Generate fresh questions for practice and quiz
+
+**Request:** Use the connected AI model to give learners new questions on every Practice and Quiz attempt.
+
+**Work:**
+
+- Connected each `/api/question` request to the configured Gemini or OpenAI-compatible provider.
+- Prompted the model to create an original question matching the learner's saved topic and difficulty.
+- Validated the returned question structure and kept answer keys on the server.
+- Preserved the authored, topic- and difficulty-matched question bank when no model key is configured; provider failures are reported instead of silently switching sources.
+
+**Verification:** Added tests confirming a separate model request on each question request, question validation, server-side answer handling, and explicit errors for invalid model output.
+
+### 18. Personalize feedback and show topic best practices
+
+**Request:** Add personalized feedback and Tips and Best Practices to Practice and Quiz.
+
+**Work:**
+
+- Added feedback that uses the learner's name, difficulty, topic, and topic-level accuracy to suggest a next reasoning step.
+- Added practical best-practice guidance for each project-management topic after both correct and incorrect answers.
+- Displayed the feedback and best practice in the shared answer-evaluation flow for Practice and Quiz.
+
+**Verification:** Added API and browser assertions for personalized feedback, topic accuracy, best-practice guidance, and both answer outcomes.
+
+### 19. Accept selected option letters
+
+**Issue reported:** Correct multiple-choice answers were marked incorrect when the learner submitted only the option letter.
+
+**Resolution and work:**
+
+- Updated answer evaluation to map A–D to the corresponding displayed choices, case-insensitively and with an optional trailing period.
+- Kept incorrect option letters incorrect and retained text-answer aliases.
+- Updated the browser regression flow to submit a lowercase option letter with a period.
+
+**Verification:** The full suite passed 30 tests: 26 API tests and four Playwright browser tests. Ruff and `git diff --check` passed.
+
+### 20. Refresh reports and publish the update
+
+**Work:**
+
+- Regenerated the test, regression, user-experience, and visual reports as Markdown and Word documents; removed the previous PDF report files so only the requested formats remain.
+- Committed the code, tests, and reports as `c8b152a` and pushed the commit to `main`.
+- Confirmed GitHub Actions CI passed for the commit and the Render `/healthz` endpoint returned HTTP 200. The service is configured to auto-deploy on push.
+
+**Deployment evidence limit:** The Render health endpoint does not expose a build SHA, so the exact commit serving the live site could not be independently confirmed.
+
+### 21. Harden AI-generated question parsing
+
+**Issue reported:** On the live application, Practice and Quiz returned an “AI provider returned an invalid question” error instead of showing a question.
+
+**Work:**
+
+- Tightened the generation prompt to request one plain JSON object without surrounding commentary.
+- Made parsing tolerant of JSON wrapped in Markdown fences or short explanatory text.
+- Normalized common model response variants, including letter-labeled choices, choice objects/maps, answer labels such as “B.”, and common aliases for prompt, answer, hint, and explanation fields.
+- Kept final validation strict: the question still needs four distinct choices and an answer that maps to one of them.
+- Logged the validation reason without logging the model response content.
+
+**Verification:** Added regression coverage for fenced JSON, surrounding prose, labeled choices, a letter-labeled correct answer, and alternate field names. The full local suite passed 31 tests, Ruff passed, and `git diff --check` passed. A live model response was not available locally to reproduce byte-for-byte.
+
 ## Current state and known limits
 
 - The live service reports Google Gemini when `GEMINI_API_KEY` is attached to the Render service through its environment configuration.
 - The default no-key behavior remains the built-in demo tutor. The live OpenAI-compatible alternative has not been tested with a real credential.
-- Practice questions are authored and randomly selected by topic and difficulty; model-generated questions on demand remain a possible future improvement.
+- With a model key configured, each Practice or Quiz question request asks the model for a fresh topic- and difficulty-matched question. Without a key, the authored question bank remains available.
+- Feedback is personalized to learner profile and topic accuracy; best practices are shown for every question topic. Multiple-choice letters A–D are accepted, including lowercase letters and an optional period.
+- The latest local automated run passed 31 tests (27 API and four browser tests); Ruff and `git diff --check` passed.
 - Render Free may sleep while idle and its local SQLite filesystem is ephemeral.
 - Gemini free-tier use has limits and may use prompts to improve provider products. Do not send sensitive or confidential information.
+- Current test, regression, user-experience, and visual reports are maintained as Markdown and Word documents; the previous PDF reports were removed.

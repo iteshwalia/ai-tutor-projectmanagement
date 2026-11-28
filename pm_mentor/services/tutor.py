@@ -3,6 +3,7 @@
 import json
 import logging
 import os
+import re
 from urllib import error, request
 from urllib.parse import urlsplit
 
@@ -130,10 +131,11 @@ def generate_model_question(profile, app_is_production):
         "Create one original multiple-choice project-management question. "
         f"Use the topic {json.dumps(profile['topic'])} and difficulty "
         f"{json.dumps(profile['difficulty'])}. Do not repeat a generic definition question. "
-        "Return only a JSON object with these fields: question (string), answer (string matching "
-        "one choice exactly), accepted (array of other valid answer strings), choices (array of "
-        "exactly four distinct strings), hint (string that does not reveal the answer), and "
-        "explanation (string explaining why the answer is correct)."
+        "Return a single plain JSON object without Markdown fences or surrounding commentary. "
+        "Use these fields: question (string), answer (string matching one choice or its A-D "
+        "letter), accepted (array of other valid answer strings), choices (array of exactly four "
+        "distinct strings), hint (string that does not reveal the answer), and explanation "
+        "(string explaining why the answer is correct)."
     )
     content, error_message, status = generate_model_response(
         prompt,
@@ -144,39 +146,72 @@ def generate_model_question(profile, app_is_production):
         return None, error_message, status
 
     try:
-        question = json.loads(content)
+        question = _parse_model_json(content)
         if not isinstance(question, dict):
             raise ValueError("The model response must be a JSON object.")
 
+        question_text = question.get("question") or question.get("prompt")
+        answer_value = (
+            question.get("answer")
+            or question.get("correct_answer")
+            or question.get("correctAnswer")
+        )
+        hint = question.get("hint") or question.get("tip")
+        explanation = question.get("explanation") or question.get("rationale")
+        choices = question.get("choices") or question.get("options")
+        accepted = question.get("accepted", question.get("accepted_answers", []))
+
+        if isinstance(choices, dict):
+            labeled_choices = {str(key).strip().casefold(): value for key, value in choices.items()}
+            choices = [
+                labeled_choices.get(letter, labeled_choices.get(f"option {letter}"))
+                for letter in "abcd"
+            ]
+        elif isinstance(choices, list):
+            choices = [
+                choice.get("text", choice.get("label", choice.get("value")))
+                if isinstance(choice, dict)
+                else choice
+                for choice in choices
+            ]
+
         text_fields = ("question", "answer", "hint", "explanation")
+        question_fields = {
+            "question": question_text,
+            "answer": answer_value,
+            "hint": hint,
+            "explanation": explanation,
+        }
         if any(
-            not isinstance(question.get(field), str)
-            or not question[field].strip()
-            or len(question[field]) > 1200
+            not isinstance(question_fields[field], str)
+            or not question_fields[field].strip()
+            or len(question_fields[field]) > 1200
             for field in text_fields
         ):
             raise ValueError("The model response contains an invalid question field.")
 
-        choices = question.get("choices")
         if (
             not isinstance(choices, list)
             or len(choices) != 4
             or any(not isinstance(choice, str) or not choice.strip() for choice in choices)
-            or len({choice.strip().casefold() for choice in choices}) != 4
         ):
             raise ValueError("The model response must contain four distinct choices.")
 
-        answer = question["answer"].strip()
-        answer_key = " ".join(answer.casefold().split())
-        choice_keys = [" ".join(choice.strip().casefold().split()) for choice in choices]
-        if answer_key not in choice_keys:
-            raise ValueError("The model response answer must match one of its choices.")
+        choices = [_strip_model_choice_label(choice) for choice in choices]
+        choice_keys = [" ".join(choice.casefold().split()) for choice in choices]
+        if len(set(choice_keys)) != 4:
+            raise ValueError("The model response must contain four distinct choices.")
 
-        accepted = question.get("accepted", [])
-        if not isinstance(accepted, list) or any(
-            not isinstance(value, str) or not value.strip() for value in accepted
-        ):
+        answer = _canonical_model_answer(answer_value, choices)
+        answer_key = " ".join(answer.casefold().split())
+
+        if accepted is None:
+            accepted = []
+        elif isinstance(accepted, str):
+            accepted = [accepted]
+        if not isinstance(accepted, list) or any(not isinstance(value, str) for value in accepted):
             raise ValueError("The model response contains invalid accepted answers.")
+        accepted = [value for value in accepted if value.strip()]
         accepted_answers = {
             " ".join(value.strip().casefold().split()): value.strip()
             for value in [answer, *accepted]
@@ -190,19 +225,64 @@ def generate_model_question(profile, app_is_production):
             {
                 "topic": profile["topic"],
                 "difficulty": profile["difficulty"],
-                "question": question["question"].strip(),
+                "question": question_text.strip(),
                 "answer": answer,
                 "accepted": list(accepted_answers.values()),
-                "choices": [choice.strip() for choice in choices],
-                "hint": question["hint"].strip(),
-                "explanation": question["explanation"].strip(),
+                "choices": choices,
+                "hint": hint.strip(),
+                "explanation": explanation.strip(),
             },
             None,
             None,
         )
-    except (json.JSONDecodeError, TypeError, ValueError):
-        logger.exception("AI provider returned an invalid practice question")
+    except (json.JSONDecodeError, TypeError, ValueError) as exc:
+        logger.warning("AI provider returned an invalid practice question: %s", exc)
         return None, "The AI provider returned an invalid question. Please try again.", 502
+
+
+def _parse_model_json(content):
+    try:
+        return json.loads(content)
+    except json.JSONDecodeError:
+        start = content.find("{")
+        end = content.rfind("}")
+        if start < 0 or end <= start:
+            raise
+        return json.loads(content[start : end + 1])
+
+
+def _strip_model_choice_label(choice):
+    match = re.fullmatch(r"\s*[a-d][.)]\s*(.+?)\s*", choice, re.IGNORECASE)
+    return match.group(1).strip() if match else choice.strip()
+
+
+def _canonical_model_answer(answer, choices):
+    if not isinstance(answer, str) or not answer.strip():
+        raise ValueError("The model response contains an invalid answer.")
+
+    answer = answer.strip()
+    choice_match = re.fullmatch(r"(?:option\s*)?([a-d])\.?", answer, re.IGNORECASE)
+    if choice_match:
+        return choices[ord(choice_match.group(1).lower()) - ord("a")]
+
+    prefixed_answer = re.fullmatch(
+        r"(?:option\s*)?([a-d])[.):]\s*(.+)",
+        answer,
+        re.IGNORECASE,
+    )
+    if prefixed_answer:
+        choice = choices[ord(prefixed_answer.group(1).lower()) - ord("a")]
+        if " ".join(prefixed_answer.group(2).casefold().split()) != " ".join(
+            choice.casefold().split()
+        ):
+            raise ValueError("The model response answer label does not match its choice.")
+        return choice
+
+    answer_key = " ".join(answer.casefold().split())
+    for choice in choices:
+        if answer_key == " ".join(choice.casefold().split()):
+            return choice.strip()
+    raise ValueError("The model response answer must match one of its choices.")
 
 
 def generate_demo_response(message, profile):
