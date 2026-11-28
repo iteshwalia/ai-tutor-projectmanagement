@@ -39,11 +39,11 @@ flowchart LR
     client <-->|"HTTPS JSON"| routes
     learning --> sqlite
     learning --> content
+    env -.-> learning
+    env -.-> tutor
     learning -->|"When configured: fresh question"| provider
     tutor -->|"When configured"| provider
     tutor -->|"Without a provider key"| content
-    env -.-> learning
-    env -.-> tutor
 
     subgraph delivery["Build and deployment"]
         github["GitHub repository"] --> actions["GitHub Actions<br/>Ruff · pytest · Playwright"]
@@ -73,7 +73,7 @@ flowchart LR
 |---|---|
 | `GET /healthz` | Service health check |
 | `GET /api/status` | Public model-provider configuration status; never returns credentials |
-| `GET /api/profile` / `POST /api/profile` | Read or update the learner profile |
+| `GET` / `POST /api/profile` | Read or update the learner profile |
 | `GET /api/question` | Generate a fresh model question when configured, otherwise select from the built-in bank |
 | `POST /api/evaluate` | Grade the active question, save progress, and return feedback |
 | `GET /api/progress` | Read cumulative learner progress |

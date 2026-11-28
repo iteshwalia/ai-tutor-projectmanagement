@@ -302,11 +302,29 @@ These are prompt examples documented in DEVELOPMENT.md. They capture the directi
 
 **Work:**
 
-- Updated the architecture guide with the browser, Flask/Waitress service, API routes, SQLite persistence, built-in content, model providers, and GitHub Actions/Render deployment flow.
-- Added the quiz request/evaluation sequence, including server-side answer keys, browser-held quiz counters, provider validation, and no-key question-bank behavior.
-- Refreshed the standalone SVG architecture diagram to match the current implementation.
+- Added a Mermaid system diagram and matching standalone SVG for the browser, Flask/Waitress service, learner and tutor APIs, SQLite, built-in content, model providers, and CI/deployment path.
+- Documented the quiz flow, API responsibilities, server-side provider credentials, browser-held quiz state, and operational limits.
+- Corrected the architecture flow to show server environment credentials feeding the application, not the model provider returning credentials.
 
-**Verification:** Parsed the SVG as XML and checked the documented endpoints and component responsibilities against the application routes.
+**Outcome:** The architecture is documented in [architecture.md](architecture.md) and [architecture.svg](architecture.svg).
+
+## Project challenges, solutions, and outcomes
+
+1. **Challenge — Keeping the tutor relevant to each learner.**
+   - **Solution:** Added profile-based topic and difficulty selection, four learning modes, personalized feedback, and topic-specific best practices.
+   - **Outcome:** Learners receive focused explanations, questions, and next-step guidance across the supported project-management topics.
+2. **Challenge — Providing fresh AI questions without exposing answer keys.**
+   - **Solution:** Added server-side model requests, question parsing and validation, and an authored question-bank path when no provider key is configured.
+   - **Outcome:** The local suite verifies fresh model requests and common response formats. Live `/api/question` requests have still returned HTTP 502, so the production question flow is not yet confirmed fixed.
+3. **Challenge — Evaluating answers consistently and making mistakes useful.**
+   - **Solution:** Normalized A–D option-letter answers and added explanations, hints, personalized feedback, and best-practice tips.
+   - **Outcome:** Browser and API tests cover correct and incorrect answers, including lowercase option letters, while progress updates by topic.
+4. **Challenge — Making quizzes feel like a complete assessment.**
+   - **Solution:** Quiz mode asks for 1–20 questions, presents them sequentially, and reports correct answers and percentage at the end.
+   - **Outcome:** The browser regression verifies count validation, a multi-question quiz, the final score report, and unchanged single-question Practice behavior.
+5. **Challenge — Maintaining quality and making the project deployable.**
+   - **Solution:** Added Flask APIs, SQLite learner state, Docker/Render configuration, GitHub Actions, browser tests, architecture diagrams, and Markdown/Word documentation.
+   - **Outcome:** The 31-test suite, Ruff, and GitHub Actions pass; code is pushed to GitHub. Render health is available, but its homepage still serves the pre-quiz update, so deployment of the latest commit is unconfirmed.
 
 ## Current state and known limits
 
@@ -315,6 +333,7 @@ These are prompt examples documented in DEVELOPMENT.md. They capture the directi
 - With a model key configured, each Practice or Quiz question request asks the model for a fresh topic- and difficulty-matched question. Without a key, the authored question bank remains available.
 - Feedback is personalized to learner profile and topic accuracy; best practices are shown for every question topic. Multiple-choice letters A–D are accepted, including lowercase letters and an optional period.
 - The latest local automated run passed 31 tests (27 API and four browser tests); Ruff and `git diff --check` passed.
+- The latest GitHub Actions run passed for commit `91cddff`; Render still serves the previous quiz interface, and live AI question generation has returned HTTP 502.
 - Render Free may sleep while idle and its local SQLite filesystem is ephemeral.
 - Gemini free-tier use has limits and may use prompts to improve provider products. Do not send sensitive or confidential information.
 - Current test, regression, user-experience, and visual reports are maintained as Markdown and Word documents; the previous PDF reports were removed.
