@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title description">
-  <title id="title">How PM Mentor works</title>
-  <desc id="description">A learner uses PM Mentor in a browser. The web app handles tutoring and progress, using built-in project-management knowledge, SQLite, and Google Gemini when configured.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="940" viewBox="0 0 1500 940" role="img" aria-labelledby="title description">
+  <title id="title">PM Mentor technical architecture</title>
+  <desc id="description">Architecture diagram of the PM Mentor browser UI, Flask and Waitress service on Render, learner and tutor APIs, SQLite, built-in learning content, optional model providers, and GitHub Actions deployment pipeline.</desc>
   <defs>
     <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
       <path d="M0,0 L10,5 L0,10 z" fill="#62748a"/>
@@ -18,74 +18,109 @@
       .browser { fill: #eef5ff; stroke: #9ab7dc; }
       .learning { fill: #edf8f4; stroke: #9acbb8; }
       .optional { fill: #fff7e9; stroke: #e2c48e; }
+      .delivery { fill: #f1efff; stroke: #b7a9e3; }
       .line { fill: none; stroke: #62748a; stroke-width: 2; marker-end: url(#arrow); }
       .dashed { stroke-dasharray: 6 5; }
     </style>
   </defs>
 
-  <rect width="1200" height="760" fill="#f3f6fa"/>
-  <text x="34" y="52" class="title">How PM Mentor works</text>
-  <text x="35" y="80" class="subtitle">A learner's browser talks to PM Mentor; the server handles tutoring, progress and optional AI.</text>
+  <rect width="1500" height="940" fill="#f3f6fa"/>
+  <text x="34" y="52" class="title">PM Mentor technical architecture</text>
+  <text x="35" y="80" class="subtitle">Browser quiz workflow · Flask APIs · server-side AI integration · learner progress</text>
 
-  <rect x="24" y="115" width="320" height="535" rx="18" class="lane"/>
-  <rect x="365" y="115" width="440" height="535" rx="18" class="lane"/>
-  <rect x="826" y="115" width="350" height="535" rx="18" class="lane"/>
+  <rect x="24" y="112" width="330" height="630" rx="18" class="lane"/>
+  <rect x="374" y="112" width="650" height="630" rx="18" class="lane"/>
+  <rect x="1044" y="112" width="432" height="630" rx="18" class="lane"/>
+  <text x="48" y="149" class="lane-title">Browser</text>
+  <text x="398" y="149" class="lane-title">Render Docker service</text>
+  <text x="1068" y="149" class="lane-title">Data and providers</text>
 
-  <text x="48" y="151" class="lane-title">The learner</text>
-  <text x="390" y="151" class="lane-title">PM Mentor service</text>
-  <text x="850" y="151" class="lane-title">What the app uses</text>
+  <path d="M190 258 L190 285" class="line"/>
+  <path d="M190 413 L190 442" class="line"/>
+  <path d="M190 546 L190 565" class="line"/>
+  <path d="M337 615 L410 340" class="line"/>
+  <path d="M700 250 L700 280" class="line"/>
+  <path d="M555 395 L555 430" class="line"/>
+  <path d="M865 395 L865 430" class="line"/>
+  <path d="M690 615 L690 658 L1032 658 L1032 280 L1060 280" class="line"/>
+  <path d="M690 615 L690 682 L1032 682 L1032 405 L1060 405" class="line"/>
+  <path d="M690 615 L690 706 L1032 706 L1032 550 L1060 550" class="line dashed"/>
+  <path d="M1000 510 L1032 510 L1032 550 L1060 550" class="line dashed"/>
+  <path d="M1000 555 L1020 555 L1020 405 L1060 405" class="line"/>
 
-  <rect x="54" y="190" width="260" height="80" rx="12" class="card"/>
-  <text x="74" y="220" class="card-title">Working professional</text>
-  <text x="74" y="246" class="body">Learns project management</text>
+  <rect x="52" y="180" width="274" height="78" rx="12" class="card"/>
+  <text x="72" y="211" class="card-title">Learner</text>
+  <text x="72" y="237" class="body">Selects topic, difficulty, and mode</text>
 
-  <rect x="54" y="315" width="260" height="220" rx="14" class="browser"/>
-  <text x="76" y="350" class="card-title">PM Mentor in the browser</text>
-  <text x="76" y="386" class="body">Chat and lesson modes</text>
-  <text x="76" y="416" class="body">Practice questions</text>
-  <text x="76" y="446" class="body">Answer feedback</text>
-  <text x="76" y="476" class="body">Progress summary</text>
-  <text x="76" y="512" class="small">No model keys are stored here.</text>
+  <rect x="52" y="285" width="274" height="128" rx="14" class="browser"/>
+  <text x="72" y="316" class="card-title">PM Mentor UI</text>
+  <text x="72" y="344" class="body">HTML · CSS · JavaScript modules</text>
+  <text x="72" y="370" class="body">Learn · Practice · Quiz · Challenge</text>
+  <text x="72" y="396" class="small">Renders questions and feedback</text>
 
-  <rect x="400" y="190" width="370" height="100" rx="14" class="browser"/>
-  <text x="424" y="224" class="card-title">Web app</text>
-  <text x="424" y="251" class="body">Shows the screen and handles requests</text>
-  <text x="424" y="273" class="body">Keeps browser and server responsibilities clear</text>
+  <rect x="52" y="442" width="274" height="104" rx="12" class="learning"/>
+  <text x="72" y="472" class="card-title">Quiz state (browser)</text>
+  <text x="72" y="500" class="body">Question count · current position</text>
+  <text x="72" y="526" class="body">Correct count · final score report</text>
 
-  <rect x="400" y="355" width="370" height="145" rx="14" class="learning"/>
-  <text x="424" y="390" class="card-title">Tutor and learning tools</text>
-  <text x="424" y="420" class="body">Choose questions and check answers</text>
-  <text x="424" y="450" class="body">Prepare explanations and feedback</text>
-  <text x="424" y="480" class="body">Update learner progress</text>
+  <rect x="52" y="565" width="274" height="104" rx="12" class="browser"/>
+  <text x="72" y="595" class="card-title">API client</text>
+  <text x="72" y="623" class="body">HTTPS JSON requests</text>
+  <text x="72" y="649" class="small">No provider credentials in browser</text>
 
-  <rect x="400" y="550" width="370" height="65" rx="12" class="optional"/>
-  <text x="424" y="578" class="card-title">Private service settings</text>
-  <text x="424" y="601" class="small">GEMINI_API_KEY is read on the server only</text>
+  <rect x="410" y="180" width="590" height="70" rx="12" class="browser"/>
+  <text x="434" y="210" class="card-title">Waitress WSGI + Flask app factory</text>
+  <text x="434" y="235" class="body">Serves templates/static assets · registers routes · applies security headers</text>
 
-  <rect x="856" y="190" width="290" height="105" rx="12" class="card"/>
-  <text x="878" y="224" class="card-title">Project-management knowledge</text>
-  <text x="878" y="252" class="body">Question bank and built-in help</text>
-  <text x="878" y="276" class="small">Available even without an AI key</text>
+  <rect x="410" y="280" width="590" height="115" rx="12" class="card"/>
+  <text x="434" y="311" class="card-title">REST API routes</text>
+  <text x="434" y="340" class="body">Learner: profile · question · evaluate · progress · reset</text>
+  <text x="434" y="368" class="body">Tutor: chat · provider status     Health: /healthz</text>
 
-  <rect x="856" y="355" width="290" height="125" rx="12" class="card"/>
-  <text x="878" y="390" class="card-title">Learner progress</text>
-  <text x="878" y="420" class="body">Profile, current question and results</text>
-  <text x="878" y="450" class="body">Saved in a SQLite file</text>
+  <rect x="410" y="430" width="280" height="185" rx="14" class="learning"/>
+  <text x="430" y="462" class="card-title">Learner workflow</text>
+  <text x="430" y="492" class="body">Generate and validate questions</text>
+  <text x="430" y="520" class="body">Keep answer keys server-side</text>
+  <text x="430" y="548" class="body">Grade answers and update progress</text>
+  <text x="430" y="580" class="small">Prepare personalized feedback and tips</text>
 
-  <rect x="856" y="535" width="290" height="80" rx="12" class="optional"/>
-  <text x="878" y="568" class="card-title">Model provider (optional)</text>
-  <text x="878" y="593" class="body">Gemini or a compatible API</text>
+  <rect x="710" y="430" width="290" height="185" rx="14" class="learning"/>
+  <text x="730" y="462" class="card-title">Tutor workflow</text>
+  <text x="730" y="492" class="body">Generate model-backed chat replies</text>
+  <text x="730" y="520" class="body">Use built-in demo when no key exists</text>
+  <text x="730" y="548" class="body">Validate provider responses</text>
+  <text x="730" y="580" class="small">Credentials stay in server environment</text>
 
-  <path d="M184 270 L184 310" class="line"/>
-  <path d="M314 370 L394 258" class="line"/>
-  <path d="M400 277 L324 410" class="line dashed"/>
-  <text x="322" y="321" class="small">questions and responses</text>
+  <rect x="1060" y="180" width="400" height="100" rx="12" class="card"/>
+  <text x="1082" y="211" class="card-title">SQLite learner store</text>
+  <text x="1082" y="239" class="body">Profile · active question · cumulative progress</text>
+  <text x="1082" y="263" class="small">Indexed by signed learner session ID</text>
 
-  <path d="M585 290 L585 350" class="line"/>
-  <path d="M770 390 L850 250" class="line"/>
-  <path d="M770 427 L850 418" class="line"/>
-  <path d="M770 470 L850 565" class="line"/>
-  <path d="M585 545 L585 505" class="line dashed"/>
+  <rect x="1060" y="305" width="400" height="110" rx="12" class="card"/>
+  <text x="1082" y="336" class="card-title">Built-in learning content</text>
+  <text x="1082" y="364" class="body">Question bank · topics · best practices</text>
+  <text x="1082" y="392" class="small">No-key practice and tutor fallback</text>
 
-  <text x="35" y="690" class="small">On Render Free, local SQLite data may reset after a restart. Use persistent storage for long-term progress.</text>
+  <rect x="1060" y="430" width="400" height="120" rx="12" class="optional"/>
+  <text x="1082" y="461" class="card-title">Optional model providers</text>
+  <text x="1082" y="489" class="body">Google Gemini · OpenAI-compatible API</text>
+  <text x="1082" y="517" class="small">Fresh question on each configured request</text>
+  <text x="1082" y="539" class="small">Keys loaded only by the server</text>
+
+  <rect x="1060" y="575" width="400" height="95" rx="12" class="optional"/>
+  <text x="1082" y="606" class="card-title">Server environment</text>
+  <text x="1082" y="634" class="body">GEMINI_API_KEY · OPENAI_API_KEY</text>
+  <text x="1082" y="658" class="small">Never returned to the browser</text>
+
+  <rect x="24" y="790" width="1452" height="104" rx="16" class="delivery"/>
+  <text x="48" y="822" class="lane-title">Build and deployment</text>
+  <text x="48" y="854" class="body">GitHub repository</text>
+  <path d="M190 850 L420 850" class="line"/>
+  <rect x="420" y="816" width="380" height="54" rx="10" class="card"/>
+  <text x="442" y="849" class="card-title">GitHub Actions · Ruff · pytest · Playwright</text>
+  <path d="M800 850 L1034 850" class="line"/>
+  <rect x="1034" y="816" width="410" height="54" rx="10" class="card"/>
+  <text x="1056" y="849" class="card-title">Render · Docker image · Waitress web service</text>
+
+  <text x="34" y="923" class="small">Quiz length and running score are client-side; current answer keys and learner progress remain server-side.</text>
 </svg>

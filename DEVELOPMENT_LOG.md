@@ -296,6 +296,18 @@ These are prompt examples documented in DEVELOPMENT.md. They capture the directi
 
 **Verification:** The browser regression test covers invalid count handling, two sequential questions, answer evaluation, the final score report, and unchanged practice/progress behavior. The full suite contains 31 tests.
 
+### 23. Document the technical architecture
+
+**Request:** Create a technical architecture diagram for PM Mentor.
+
+**Work:**
+
+- Updated the architecture guide with the browser, Flask/Waitress service, API routes, SQLite persistence, built-in content, model providers, and GitHub Actions/Render deployment flow.
+- Added the quiz request/evaluation sequence, including server-side answer keys, browser-held quiz counters, provider validation, and no-key question-bank behavior.
+- Refreshed the standalone SVG architecture diagram to match the current implementation.
+
+**Verification:** Parsed the SVG as XML and checked the documented endpoints and component responsibilities against the application routes.
+
 ## Current state and known limits
 
 - The live service reports Google Gemini when `GEMINI_API_KEY` is attached to the Render service through its environment configuration.
